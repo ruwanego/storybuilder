@@ -14,7 +14,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/iancoleman/strcase v0.2.0
-	github.com/jedib0t/go-pretty/v6 v6.2.4
+	github.com/jedib0t/go-pretty/v6 v6.3.1
 	github.com/lib/pq v1.10.3
 	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/prometheus/client_golang v1.11.0

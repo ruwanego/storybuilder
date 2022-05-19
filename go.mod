@@ -17,12 +17,10 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/lib/pq v1.10.3
 	github.com/logrusorgru/aurora v2.0.3+incompatible
-	github.com/prometheus/client_golang v1.11.0
-	github.com/prometheus/common v0.30.0 // indirect
+	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/swaggo/swag v1.7.1
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0

@@ -20,8 +20,7 @@ require (
 	github.com/logrusorgru/aurora/v3 v3.0.0
 	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/procfs v0.7.3 // indirect
-	github.com/swaggo/swag v1.7.1
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+	github.com/swaggo/swag v1.8.2
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0

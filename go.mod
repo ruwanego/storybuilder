@@ -17,6 +17,7 @@ require (
 	github.com/jedib0t/go-pretty/v6 v6.3.1
 	github.com/lib/pq v1.10.3
 	github.com/logrusorgru/aurora v2.0.3+incompatible
+	github.com/logrusorgru/aurora/v3 v3.0.0
 	github.com/prometheus/client_golang v1.12.2
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/swaggo/swag v1.7.1

@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	errHandler "github.com/storybuilder/storybuilder/channels/http/error"
+	"github.com/storybuilder/storybuilder/channels/http/response/mappers"
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 )
 
@@ -19,7 +20,13 @@ func Send(w http.ResponseWriter, payload interface{}, code int) {
 	w.WriteHeader(code)
 
 	// set payload
-	_, err := w.Write(toJSON(payload))
+	var err error
+	switch payload.(type) {
+	case []byte:
+		_, err = w.Write(payload.([]byte))
+	case mappers.Payload:
+		_, err = w.Write(toJSON(payload))
+	}
 	if err != nil {
 		fmt.Printf("JSON Writing Error: %v", err)
 	}
@@ -52,6 +59,5 @@ func toJSON(payload interface{}) []byte {
 	if err != nil {
 		fmt.Printf("JSON Marshaling Error: %v", err)
 	}
-
 	return msg
 }

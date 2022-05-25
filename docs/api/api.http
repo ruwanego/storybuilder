@@ -1,2 +1,10 @@
-GET http://localhost:3000/samples
+POST http://localhost:3000/samples
+Content-Type: application/json
+
+{
+
+}
+
+###
+GET http://localhost:3000/samples/1
 Content-Type: application/json

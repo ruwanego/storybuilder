@@ -12,17 +12,14 @@ type Middleware interface {
 
 func Init(ctr *container.Container) (middlewares []func(http.Handler) http.Handler) {
 	// NOTE: middleware will execute in the order they are added to the router
-	ms := []Middleware{
+	middlewares = []func(http.Handler) http.Handler{
 		// add metrics middleware first
-		NewMetricsMiddleware(),
-		NewCORSMiddleware(),
-		NewLoggerMiddleware(),
-		NewRequestIDMiddleware(),
-		NewRequestCheckerMiddleware(ctr),
-		NewRequestAlterMiddleware(),
-	}
-	for _, middleware := range ms {
-		middlewares = append(middlewares, middleware.Middleware)
+		NewMetricsMiddleware().Middleware,
+		NewCORSMiddleware().Middleware,
+		NewLoggerMiddleware().Middleware,
+		NewRequestIDMiddleware().Middleware,
+		NewRequestCheckerMiddleware(ctr).Middleware,
+		NewRequestAlterMiddleware().Middleware,
 	}
 	return
 }

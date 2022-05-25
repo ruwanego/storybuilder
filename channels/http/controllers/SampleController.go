@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -77,6 +78,7 @@ func (ctl *SampleController) GetByID(w http.ResponseWriter, r *http.Request) {
 	// get data
 	smpl, err := ctl.sampleUseCase.GetByID(ctx, id)
 	if err != nil {
+		fmt.Println("+++++++++++++")
 		ctl.sendError(ctx, w, err)
 		return
 	}

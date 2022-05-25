@@ -22,6 +22,5 @@ func Map(data []interface{}) (m mappers.Payload) {
 			m.Data = v
 		}
 	}
-
 	return m
 }

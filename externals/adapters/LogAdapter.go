@@ -39,7 +39,7 @@ func (a *LogAdapter) Error(ctx context.Context, message string, options ...inter
 
 // Debug logs a message as of debug type.
 func (a *LogAdapter) Debug(ctx context.Context, message string, options ...interface{}) {
-	a.log(ctx, "DEBUG", message)
+	a.log(ctx, "DEBUG", message, options)
 }
 
 // Info logs a message as of information type.

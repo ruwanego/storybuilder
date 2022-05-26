@@ -22,12 +22,10 @@ func (t *SampleTransformer) TransformAsObject(data interface{}) (interface{}, er
 	if !ok {
 		return nil, t.dataMismatchError()
 	}
-
 	tr := SampleTransformer{
 		ID:   sample.ID,
 		Name: sample.Name,
 	}
-
 	return tr, nil
 }
 
@@ -38,22 +36,18 @@ func (t *SampleTransformer) TransformAsCollection(data interface{}) (interface{}
 	//		 marshaling empty slices
 	// https://apoorvam.github.io/blog/2017/golang-json-marshal-slice-as-empty-array-not-null/
 	trSamples := make([]SampleTransformer, 0)
-
 	samples, ok := data.([]entities.Sample)
 	if !ok {
 		return nil, t.dataMismatchError()
 	}
-
 	for _, sample := range samples {
 		tr, err := t.TransformAsObject(sample)
 		if err != nil {
 			return nil, err
 		}
-
 		trSample, _ := tr.(SampleTransformer)
 		trSamples = append(trSamples, trSample)
 	}
-
 	return trSamples, nil
 }
 

@@ -18,7 +18,6 @@ import (
 // format formats the error by error type.
 func format(err error) []byte {
 	var payload interface{}
-
 	switch err.(type) {
 	case *baseErrs.ServerError,
 		*httpErrs.MiddlewareError,
@@ -33,21 +32,17 @@ func format(err error) []byte {
 	default:
 		payload = formatUnknownError(err)
 	}
-
 	wrapper := mappers.Error{
 		Payload: payload,
 	}
-
-	message, _ := json.Marshal(wrapper)
-
-	return message
+	msg, _ := json.Marshal(wrapper)
+	return msg
 }
 
 // formatGenericError formats all generic errors.
 func formatGenericError(err error) transformers.ErrorTransformer {
 	errorDetails := strings.Split(err.Error(), "|")
 	errCode, _ := strconv.Atoi(errorDetails[1])
-
 	return transformers.ErrorTransformer{
 		Type:  errorDetails[0],
 		Code:  errCode,

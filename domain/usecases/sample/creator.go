@@ -14,7 +14,6 @@ func (s *Sample) Add(ctx context.Context, sample entities.Sample) error {
 		if err != nil {
 			return nil, err
 		}
-
 		return nil, nil
 	})
 	if err != nil {

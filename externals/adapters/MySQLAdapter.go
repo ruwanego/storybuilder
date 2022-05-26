@@ -26,28 +26,23 @@ type MySQLAdapter struct {
 func NewMySQLAdapter(cfg config.DBConfig) (adapters.DBAdapterInterface, error) {
 	connString := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
-
 	db, err := sql.Open("mysql", connString)
 	if err != nil {
 		return nil, err
 	}
-
 	// pool configurations
 	db.SetMaxOpenConns(cfg.PoolSize)
 	// db.SetMaxIdleConns(2)
 	// db.SetConnMaxLifetime(time.Hour)
-
 	a := &MySQLAdapter{
 		cfg:      cfg,
 		pool:     db,
 		pqPrefix: "?",
 	}
-
 	// check whether the db is accessible
 	if cfg.Check {
 		return a, a.Ping()
 	}
-
 	return a, nil
 }
 
@@ -59,32 +54,26 @@ func (a *MySQLAdapter) Ping() error {
 // Query runs a query and returns the result.
 func (a *MySQLAdapter) Query(ctx context.Context, query string, parameters map[string]interface{}) ([]map[string]interface{}, error) {
 	convertedQuery, placeholders := a.convertQuery(query)
-
 	reorderedParameters, err := a.reorderParameters(parameters, placeholders)
 	if err != nil {
 		return nil, err
 	}
-
 	statement, err := a.prepareStatement(ctx, convertedQuery)
 	if err != nil {
 		return nil, err
 	}
-
 	// check whether the query is a select statement
 	if strings.EqualFold(convertedQuery[:1], "s") {
 		rows, err := statement.Query(reorderedParameters...)
 		if err != nil {
 			return nil, err
 		}
-
 		return a.prepareDataSet(rows)
 	}
-
 	result, err := statement.Exec(reorderedParameters...)
 	if err != nil {
 		return nil, err
 	}
-
 	return a.prepareResultSet(result)
 }
 

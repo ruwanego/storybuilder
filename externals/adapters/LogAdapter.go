@@ -64,16 +64,12 @@ func (a *LogAdapter) initLogFile() error {
 	if !a.cfg.File {
 		return nil
 	}
-
 	ld := a.cfg.Directory
-
 	f, err := os.OpenFile(filepath.Join(ld, "out.log"), os.O_RDWR|os.O_CREATE|os.O_APPEND, 0o666)
 	if err != nil {
 		return err
 	}
-
 	a.lf = f
-
 	return nil
 }
 
@@ -86,9 +82,7 @@ func (a *LogAdapter) log(ctx context.Context, logLevel, message string, options 
 	if !a.isLoggable(logLevel) {
 		return
 	}
-
 	m := a.formatMessage(ctx, logLevel, message, options)
-
 	a.logToConsole(m)
 	a.logToFile(m)
 }
@@ -99,7 +93,6 @@ func (a *LogAdapter) formatMessage(ctx context.Context, logLevel, message string
 	uuid := ctx.Value(globals.UUIDKey)
 	prefix := ctx.Value(globals.PrefixKey)
 	level := a.setTag(logLevel)
-
 	return fmt.Sprintf("%s %s [%s] [%v] [%v] [%v]", now, level, uuid, prefix, message, options)
 }
 
@@ -111,7 +104,6 @@ func (a *LogAdapter) isLoggable(logLevel string) bool {
 		"WARN":  3,
 		"INFO":  4,
 	}
-
 	return l[logLevel] >= l[a.cfg.Level]
 }
 
@@ -119,7 +111,6 @@ func (a *LogAdapter) isLoggable(logLevel string) bool {
 func (a *LogAdapter) setTag(logLevel string) interface{} {
 	if a.cfg.Colors {
 		var logLevelVal aurora.Value
-
 		switch logLevel {
 		case "ERROR":
 			logLevelVal = aurora.Red("[ERROR]")
@@ -132,10 +123,8 @@ func (a *LogAdapter) setTag(logLevel string) interface{} {
 		default:
 			logLevelVal = aurora.Magenta("[UNKNOWN]")
 		}
-
 		return logLevelVal
 	}
-
 	return "[" + logLevel + "]"
 }
 
@@ -151,7 +140,6 @@ func (a *LogAdapter) logToFile(message string) {
 	if !a.cfg.File {
 		return
 	}
-
 	_, err := a.lf.WriteString(message + "\n")
 	if err != nil {
 		fmt.Println(err)

@@ -1,8 +1,8 @@
 package response
 
 import (
-	"github.com/storybuilder/storybuilder/channels/http/response/mappers"
-	"github.com/storybuilder/storybuilder/channels/http/response/transformers"
+	"github.com/storybuilder/storybuilder/transport/http/response/mappers"
+	"github.com/storybuilder/storybuilder/transport/http/response/transformers"
 )
 
 // Transform transforms data either as an object or as a collection depending on the `isCollection` boolean value.

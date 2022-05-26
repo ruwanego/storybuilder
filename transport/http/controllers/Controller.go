@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/storybuilder/storybuilder/app/container"
-	"github.com/storybuilder/storybuilder/channels/http/response"
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	"github.com/storybuilder/storybuilder/domain/globals"
+	"github.com/storybuilder/storybuilder/transport/http/response"
 )
 
 // Controller is the base struct that holds fields and functionality common to all controllers.

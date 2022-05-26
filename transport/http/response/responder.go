@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
-	errHandler "github.com/storybuilder/storybuilder/channels/http/error"
-	"github.com/storybuilder/storybuilder/channels/http/response/mappers"
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
+	errHandler "github.com/storybuilder/storybuilder/transport/http/error"
+	"github.com/storybuilder/storybuilder/transport/http/response/mappers"
 )
 
 // Send sets all required fields and write the response.

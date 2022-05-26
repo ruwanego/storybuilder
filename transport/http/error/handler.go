@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	baseErrs "github.com/storybuilder/storybuilder/app/errors"
-	httpErrs "github.com/storybuilder/storybuilder/channels/http/errors"
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	domainErrs "github.com/storybuilder/storybuilder/domain/errors"
 	externalErrs "github.com/storybuilder/storybuilder/externals/errors"
+	httpErrs "github.com/storybuilder/storybuilder/transport/http/errors"
 )
 
 // Handle handles all errors globally.

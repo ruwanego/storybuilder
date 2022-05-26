@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/storybuilder/storybuilder/app/container"
-	"github.com/storybuilder/storybuilder/channels/http/response/transformers"
+	"github.com/storybuilder/storybuilder/transport/http/response/transformers"
 )
 
 // APIController contains controller logic for endpoints.

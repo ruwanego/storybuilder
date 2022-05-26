@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"regexp"
 
-	httpErrs "github.com/storybuilder/storybuilder/channels/http/errors"
-	"github.com/storybuilder/storybuilder/channels/http/request/unpackers"
+	httpErrs "github.com/storybuilder/storybuilder/transport/http/errors"
+	"github.com/storybuilder/storybuilder/transport/http/request/unpackers"
 )
 
 // Unpack the request in to the given unpacker struct.
@@ -16,7 +16,6 @@ func Unpack(r *http.Request, unpacker unpackers.UnpackerInterface) error {
 	if err != nil {
 		return httpErrs.NewValidationError(formatUnpackerMessage(unpacker.RequiredFormat()))
 	}
-
 	return nil
 }
 
@@ -24,11 +23,8 @@ func Unpack(r *http.Request, unpacker unpackers.UnpackerInterface) error {
 func formatUnpackerMessage(p string) string {
 	// catch carriage returns and new lines
 	reNewLine := regexp.MustCompile(`[\r\n]+`)
-
 	// catch other special characters
 	reSpecialChar := regexp.MustCompile(`[\t"']*`)
-
 	m := reSpecialChar.ReplaceAllString(reNewLine.ReplaceAllString(p, " "), "")
-
 	return fmt.Sprintf("Required format: %s", m)
 }

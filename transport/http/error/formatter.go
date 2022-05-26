@@ -8,11 +8,11 @@ import (
 	"github.com/iancoleman/strcase"
 
 	baseErrs "github.com/storybuilder/storybuilder/app/errors"
-	httpErrs "github.com/storybuilder/storybuilder/channels/http/errors"
-	"github.com/storybuilder/storybuilder/channels/http/response/mappers"
-	"github.com/storybuilder/storybuilder/channels/http/response/transformers"
 	domainErrs "github.com/storybuilder/storybuilder/domain/errors"
 	externalErrs "github.com/storybuilder/storybuilder/externals/errors"
+	httpErrs "github.com/storybuilder/storybuilder/transport/http/errors"
+	"github.com/storybuilder/storybuilder/transport/http/response/mappers"
+	"github.com/storybuilder/storybuilder/transport/http/response/transformers"
 )
 
 // format formats the error by error type.

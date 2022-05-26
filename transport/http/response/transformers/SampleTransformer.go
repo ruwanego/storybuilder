@@ -1,8 +1,8 @@
 package transformers
 
 import (
-	"github.com/storybuilder/storybuilder/channels/http/errors"
 	"github.com/storybuilder/storybuilder/domain/entities"
+	"github.com/storybuilder/storybuilder/transport/http/errors"
 )
 
 // SampleTransformer is used to transform sample.

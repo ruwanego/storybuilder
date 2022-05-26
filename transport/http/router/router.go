@@ -4,8 +4,8 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/storybuilder/storybuilder/app/container"
-	"github.com/storybuilder/storybuilder/channels/http/controllers"
-	"github.com/storybuilder/storybuilder/channels/http/middleware"
+	"github.com/storybuilder/storybuilder/transport/http/controllers"
+	"github.com/storybuilder/storybuilder/transport/http/middleware"
 )
 
 // Init initializes the router.

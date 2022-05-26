@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/storybuilder/storybuilder/app/container"
-	httpErrs "github.com/storybuilder/storybuilder/channels/http/errors"
-	"github.com/storybuilder/storybuilder/channels/http/response"
+	httpErrs "github.com/storybuilder/storybuilder/transport/http/errors"
+	"github.com/storybuilder/storybuilder/transport/http/response"
 )
 
 // RequestCheckerMiddleware validates the request header.
@@ -41,10 +41,9 @@ func (m *RequestCheckerMiddleware) Middleware(next http.Handler) http.Handler {
 
 		// check content type
 		if contentType != "application/json" {
-			err := httpErrs.NewMiddlewareError(fmt.Sprintf("API only accepts JSON as Content-Type, '%s' is given", contentType), 100, "")
-
+			err := httpErrs.NewMiddlewareError(
+				fmt.Sprintf("API only accepts JSON as Content-Type, '%s' is given", contentType), 100, "")
 			response.Error(r.Context(), w, err, m.container.Adapters.LogAdapter)
-
 			return
 		}
 

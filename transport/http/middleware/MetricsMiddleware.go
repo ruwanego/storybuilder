@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/storybuilder/storybuilder/channels/http/metrics"
+	"github.com/storybuilder/storybuilder/transport/http/metrics"
 )
 
 // MetricsMiddleware attaches metrics to the request.

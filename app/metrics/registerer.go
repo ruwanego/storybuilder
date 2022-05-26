@@ -3,7 +3,7 @@ package metrics
 import (
 	"github.com/prometheus/client_golang/prometheus"
 
-	httpMetrics "github.com/storybuilder/storybuilder/channels/http/metrics"
+	httpMetrics "github.com/storybuilder/storybuilder/transport/http/metrics"
 )
 
 // Register registers declared metrics.

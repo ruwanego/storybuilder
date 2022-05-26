@@ -9,8 +9,8 @@ import (
 	"github.com/storybuilder/storybuilder/app/config"
 	"github.com/storybuilder/storybuilder/app/container"
 	"github.com/storybuilder/storybuilder/app/splash"
-	httpServer "github.com/storybuilder/storybuilder/channels/http/server"
-	metricsServer "github.com/storybuilder/storybuilder/channels/metrics/server"
+	httpServer "github.com/storybuilder/storybuilder/transport/http/server"
+	metricsServer "github.com/storybuilder/storybuilder/transport/metrics/server"
 )
 
 func main() {

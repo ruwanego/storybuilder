@@ -7,12 +7,12 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/storybuilder/storybuilder/app/container"
-	"github.com/storybuilder/storybuilder/channels/http/request"
-	"github.com/storybuilder/storybuilder/channels/http/request/unpackers"
-	"github.com/storybuilder/storybuilder/channels/http/response"
-	"github.com/storybuilder/storybuilder/channels/http/response/transformers"
 	"github.com/storybuilder/storybuilder/domain/entities"
 	"github.com/storybuilder/storybuilder/domain/usecases/sample"
+	"github.com/storybuilder/storybuilder/transport/http/request"
+	"github.com/storybuilder/storybuilder/transport/http/request/unpackers"
+	"github.com/storybuilder/storybuilder/transport/http/response"
+	"github.com/storybuilder/storybuilder/transport/http/response/transformers"
 )
 
 // SampleController contains controller logic for endpoints.

@@ -10,7 +10,7 @@ import (
 
 	"github.com/storybuilder/storybuilder/app/config"
 	"github.com/storybuilder/storybuilder/app/container"
-	"github.com/storybuilder/storybuilder/channels/http/router"
+	"github.com/storybuilder/storybuilder/transport/http/router"
 )
 
 // Run runs the http server.

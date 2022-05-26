@@ -22,10 +22,8 @@ func (m *MetricsMiddleware) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 		lrw := newLoggingResponseWriter(w)
-
 		// Call the next handler, which can be another middleware in the chain, or the final handler.
 		next.ServeHTTP(lrw, r)
-
 		const OneMillion = 1000000
 		duration := float64(time.Since(startTime).Nanoseconds() / OneMillion)
 		metrics.HTTPReqDuration.WithLabelValues(strconv.Itoa(lrw.statusCode), r.Method, m.generalizePath(r.URL.Path)).Observe(duration)
@@ -44,21 +42,18 @@ func (m *MetricsMiddleware) Middleware(next http.Handler) http.Handler {
 // '/resource/123/lon/79.5/lat/5.5' will be converted to '/resource/id/lon/val/lat/val'.
 func (m *MetricsMiddleware) generalizePath(path string) string {
 	routeParts := strings.Split(path, "/")
-
 	for i, routePart := range routeParts {
 		_, errInt := strconv.ParseInt(routePart, 10, 64)
 		if errInt == nil {
 			routeParts[i] = "id"
 			continue
 		}
-
 		_, errFloat := strconv.ParseFloat(routePart, 64)
 		if errFloat == nil {
 			routeParts[i] = "val"
 			continue
 		}
 	}
-
 	return strings.Join(routeParts, "/")
 }
 

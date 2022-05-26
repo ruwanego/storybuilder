@@ -10,7 +10,6 @@ func Transform(data interface{}, t transformers.TransformerInterface, isCollecti
 	if isCollection {
 		return t.TransformAsCollection(data)
 	}
-
 	return t.TransformAsObject(data)
 }
 

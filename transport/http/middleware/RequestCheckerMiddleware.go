@@ -30,7 +30,6 @@ func (m *RequestCheckerMiddleware) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestURI := r.RequestURI
 		contentType := r.Header.Get("Content-Type")
-
 		// skip omitted routes
 		for _, v := range m.omittedRoutes {
 			if v == requestURI {
@@ -38,7 +37,6 @@ func (m *RequestCheckerMiddleware) Middleware(next http.Handler) http.Handler {
 				return
 			}
 		}
-
 		// check content type
 		if contentType != "application/json" {
 			err := httpErrs.NewMiddlewareError(
@@ -46,7 +44,6 @@ func (m *RequestCheckerMiddleware) Middleware(next http.Handler) http.Handler {
 			response.Error(r.Context(), w, err, m.container.Adapters.LogAdapter)
 			return
 		}
-
 		// Call the next handler, which can be another middleware in the chain, or the final handler.
 		next.ServeHTTP(w, r)
 	})

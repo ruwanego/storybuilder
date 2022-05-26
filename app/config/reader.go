@@ -11,6 +11,5 @@ func read(file string) []byte {
 	if err != nil {
 		panic(fmt.Sprintf("error: %v", err))
 	}
-
 	return content
 }

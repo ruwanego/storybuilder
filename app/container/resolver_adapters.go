@@ -16,7 +16,6 @@ func resolveAdapters(cfg *config.Config) Adapters {
 	resolveLogAdapter(cfg.LogConfig)
 	resolveValidatorAdapter()
 	resolveCacheAdapter(cfg.AppConfig.Cache)
-
 	return resolvedAdapters
 }
 
@@ -26,14 +25,12 @@ func resolveDBAdapter(cfg config.DBConfig) {
 	if err != nil {
 		panic(fmt.Sprintf("error: %v", err))
 	}
-
 	resolvedAdapters.DBAdapter = db
 }
 
 // resolveDBTransactionAdapter resolves the database transaction adapter.
 func resolveDBTransactionAdapter() {
 	tx := adapters.NewMySQLTxAdapter(resolvedAdapters.DBAdapter)
-
 	resolvedAdapters.DBTxAdapter = tx
 }
 
@@ -43,7 +40,6 @@ func resolveLogAdapter(cfg config.LogConfig) {
 	if err != nil {
 		panic(fmt.Sprintf("error: %v", err))
 	}
-
 	resolvedAdapters.LogAdapter = la
 }
 
@@ -53,7 +49,6 @@ func resolveValidatorAdapter() {
 	if err != nil {
 		panic(fmt.Sprintf("error: %v", err))
 	}
-
 	resolvedAdapters.ValidatorAdapter = v
 }
 

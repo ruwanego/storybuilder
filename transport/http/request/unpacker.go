@@ -11,7 +11,7 @@ import (
 )
 
 // Unpack the request in to the given unpacker struct.
-func Unpack(r *http.Request, unpacker unpackers.UnpackerInterface) error {
+func Unpack(r *http.Request, unpacker unpackers.Unpacker) error {
 	err := json.NewDecoder(r.Body).Decode(unpacker)
 	if err != nil {
 		return httpErrs.NewValidationError(formatUnpackerMessage(unpacker.RequiredFormat()))

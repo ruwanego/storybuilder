@@ -3,12 +3,14 @@ mode: DEBUG
 host:
 port: 3000
 timezone: GMT+0530
-
+timeout:
+  write: 15s
+  read: 15s
+  idle: 60s
 metrics:
   enabled: false
   port: 3001
   route: /metrics
-
 cache:
   life-window: 24h
   hard-max-size: 5

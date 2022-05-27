@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 // Config is the master config struct that holds all other config structs.
 type Config struct {
 	AppConfig      AppConfig
@@ -10,13 +12,28 @@ type Config struct {
 
 // AppConfig holds application configurations.
 type AppConfig struct {
-	Name     string       `yaml:"name"`
-	Mode     string       `yaml:"mode"`
-	Host     string       `yaml:"host"`
-	Port     int          `yaml:"port"`
-	Timezone string       `yaml:"timezone"`
-	Metrics  MetricConfig `yaml:"metrics"`
-	Cache    CacheConfig  `yaml:"cache"`
+	Name     string        `yaml:"name"`
+	Mode     string        `yaml:"mode"`
+	Host     string        `yaml:"host"`
+	Port     int           `yaml:"port"`
+	Timeout  TimeoutConfig `yaml:"timeout"`
+	Timezone string        `yaml:"timezone"`
+	Metrics  MetricConfig  `yaml:"metrics"`
+	Cache    CacheConfig   `yaml:"cache"`
+}
+
+type (
+	DurString     string
+	TimeoutConfig struct {
+		Read  DurString `yaml:"read"`
+		Write DurString `yaml:"write"`
+		Idle  DurString `yaml:"idle"`
+	}
+)
+
+func (d DurString) Dur() time.Duration {
+	tDur, _ := time.ParseDuration(string(d))
+	return tDur
 }
 
 // DBConfig holds database configurations.

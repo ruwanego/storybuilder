@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/storybuilder/storybuilder/app/config"
 	"github.com/storybuilder/storybuilder/app/container"
@@ -20,10 +19,10 @@ func Run(cfg config.AppConfig, ctr *container.Container) *http.Server {
 	srv := &http.Server{
 		Addr: cfg.Host + ":" + strconv.Itoa(cfg.Port),
 		// good practice to set timeouts to avoid Slowloris attacks
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 60,
-		// pass our instance of gorilla/mux in
+		WriteTimeout: cfg.Timeout.Write.Dur(),
+		ReadTimeout:  cfg.Timeout.Read.Dur(),
+		IdleTimeout:  cfg.Timeout.Idle.Dur(),
+		// pass our instance of chi.Mux in
 		Handler: r,
 	}
 	// run our server in a goroutine so that it doesn't block

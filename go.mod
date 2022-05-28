@@ -18,5 +18,5 @@ require (
 	github.com/prometheus/client_golang v1.12.2
 	github.com/swaggo/swag v1.8.2
 	google.golang.org/protobuf v1.27.1 // indirect
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.0
 )

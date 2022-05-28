@@ -26,7 +26,8 @@ func (m *MetricsMiddleware) Middleware(next http.Handler) http.Handler {
 		next.ServeHTTP(lrw, r)
 		const OneMillion = 1000000
 		duration := float64(time.Since(startTime).Nanoseconds() / OneMillion)
-		metrics.HTTPReqDuration.WithLabelValues(strconv.Itoa(lrw.statusCode), r.Method, m.generalizePath(r.URL.Path)).Observe(duration)
+		metrics.HTTPReqDuration.WithLabelValues(strconv.Itoa(lrw.statusCode), r.Method,
+			m.generalizePath(r.URL.Path)).Observe(duration)
 	})
 }
 

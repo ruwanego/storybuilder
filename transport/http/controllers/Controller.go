@@ -32,10 +32,6 @@ func (ctl *Controller) withTrace(ctx context.Context, prefix string) context.Con
 // sendResponse is a convenience function wrapping the actual `response.Send` function
 // to provide a cleaner usage interface.
 func (ctl *Controller) sendResponse(_ context.Context, w http.ResponseWriter, code int, payload ...interface{}) {
-	if len(payload) == 0 {
-		response.Send(w, nil, code)
-		return
-	}
 	response.Send(w, response.Map(payload), code)
 }
 

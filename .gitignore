@@ -2,3 +2,4 @@ vendor
 main
 /.idea
 /tmp
+air.toml

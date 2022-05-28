@@ -2,7 +2,6 @@ package response
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -12,20 +11,12 @@ import (
 )
 
 // Send sets all required fields and write the response.
-func Send(w http.ResponseWriter, payload interface{}, code int) {
+func Send[byteOrPayload mappers.ByteOrPayload](w http.ResponseWriter, payload byteOrPayload, code int) {
 	// set headers
 	w.Header().Set("Content-Type", "application/json")
 	// set response code
 	w.WriteHeader(code)
-	// set payload
-	var p []byte
-	switch payload.(type) {
-	case []byte:
-		p = payload.([]byte)
-	case mappers.Payload:
-		p = toJSON(payload)
-	}
-	_, err := w.Write(p)
+	_, err := w.Write(payload.ToJSON())
 	if err != nil {
 		fmt.Printf("JSON Writing Error: %v", err)
 	}
@@ -44,14 +35,5 @@ func Error(ctx context.Context, w http.ResponseWriter, err interface{}, logger a
 	if isV {
 		msg, code = errHandler.HandleValidationErrors(ctx, errV, logger)
 	}
-	Send(w, msg, code)
-}
-
-// toJSON converts the payload to JSON.
-func toJSON(payload interface{}) []byte {
-	msg, err := json.Marshal(payload)
-	if err != nil {
-		fmt.Printf("JSON Marshaling Error: %v", err)
-	}
-	return msg
+	Send(w, msg.(mappers.MyByte), code)
 }

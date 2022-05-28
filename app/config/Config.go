@@ -1,6 +1,9 @@
 package config
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Config is the master config struct that holds all other config structs.
 type Config struct {
@@ -22,18 +25,20 @@ type AppConfig struct {
 	Cache    CacheConfig   `yaml:"cache"`
 }
 
-type (
-	DurString     string
-	TimeoutConfig struct {
-		Read  DurString `yaml:"read"`
-		Write DurString `yaml:"write"`
-		Idle  DurString `yaml:"idle"`
-	}
-)
+type DurString string
 
 func (d DurString) Dur() time.Duration {
-	tDur, _ := time.ParseDuration(string(d))
+	tDur, err := time.ParseDuration(string(d))
+	if err != nil {
+		panic(fmt.Sprintf("error: %v", err))
+	}
 	return tDur
+}
+
+type TimeoutConfig struct {
+	Read  DurString `yaml:"read"`
+	Write DurString `yaml:"write"`
+	Idle  DurString `yaml:"idle"`
 }
 
 // DBConfig holds database configurations.

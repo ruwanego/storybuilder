@@ -14,7 +14,7 @@ import (
 // FreeCacheAdapter is used to communicate with a free cache.
 type FreeCacheAdapter struct {
 	cache      *freecache.Cache
-	expireTime int
+	expireTime time.Duration
 }
 
 // NewFreeCacheAdapter creates a new Cache adapter instance.
@@ -22,11 +22,9 @@ func NewFreeCacheAdapter(cfg config.CacheConfig) (adapters.CacheAdapterInterface
 	cacheSize := cfg.HardMaxSize * 1024 * 1024
 	cache := freecache.NewCache(cacheSize)
 	debug.SetGCPercent(20)
-	lifeWindowDur, _ := time.ParseDuration(cfg.LifeWindow)
-	lifeWindowDurS := int(lifeWindowDur.Seconds())
 	a := &FreeCacheAdapter{
 		cache:      cache,
-		expireTime: lifeWindowDurS,
+		expireTime: cfg.LifeWindow.Dur(),
 	}
 	return a, nil
 }
@@ -53,7 +51,7 @@ func (f FreeCacheAdapter) Set(key string, value []byte) {
 	if len(key) == 0 {
 		return
 	}
-	f.cache.Set([]byte(key), value, f.expireTime)
+	f.cache.Set([]byte(key), value, int(f.expireTime.Seconds()))
 }
 
 func (f FreeCacheAdapter) Destruct() {

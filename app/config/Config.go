@@ -77,6 +77,6 @@ type ServiceConfig struct {
 
 // CacheConfig holds cache configurations.
 type CacheConfig struct {
-	LifeWindow  string `yaml:"life-window"`
-	HardMaxSize int    `yaml:"hard-max-size"`
+	LifeWindow  DurString `yaml:"life-window"`
+	HardMaxSize int       `yaml:"hard-max-size"`
 }

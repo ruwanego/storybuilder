@@ -33,24 +33,20 @@ func NewSampleController(ctr *container.Container) *SampleController {
 func (ctl *SampleController) Get(w http.ResponseWriter, r *http.Request) {
 	// get the context
 	ctx := r.Context()
-
 	// add a trace string to the context
 	ctx = ctl.withTrace(ctx, "SampleController.Get")
-
 	// get data
 	samples, err := ctl.sampleUseCase.Get(ctx)
 	if err != nil {
 		ctl.sendError(ctx, w, err)
 		return
 	}
-
 	// transform
 	tr, err := response.Transform(samples, transformers.NewSampleTransformer(), true)
 	if err != nil {
 		ctl.sendError(ctx, w, err)
 		return
 	}
-
 	// send response
 	ctl.sendResponse(ctx, w, http.StatusOK, tr)
 }
@@ -59,35 +55,29 @@ func (ctl *SampleController) Get(w http.ResponseWriter, r *http.Request) {
 func (ctl *SampleController) GetByID(w http.ResponseWriter, r *http.Request) {
 	// get the context
 	ctx := r.Context()
-
 	// add a trace string to the context
 	ctx = ctl.withTrace(ctx, "SampleController.GetByID")
-
 	// get id from request
 	idVal := chi.URLParam(r, "id")
 	id, _ := strconv.Atoi(idVal)
-
 	// validate
 	errs := ctl.validator.ValidateField(id, "required,gt=0")
 	if errs != nil {
 		ctl.sendError(ctx, w, errs)
 		return
 	}
-
 	// get data
 	smpl, err := ctl.sampleUseCase.GetByID(ctx, id)
 	if err != nil {
 		ctl.sendError(ctx, w, err)
 		return
 	}
-
 	// transform
 	tr, err := response.Transform(smpl, transformers.NewSampleTransformer(), false)
 	if err != nil {
 		ctl.sendError(ctx, w, err)
 		return
 	}
-
 	// send response
 	ctl.sendResponse(ctx, w, http.StatusOK, tr)
 }

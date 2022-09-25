@@ -1,6 +1,6 @@
 module github.com/storybuilder/storybuilder
 
-go 1.15
+go 1.19
 
 require (
 	github.com/coocood/freecache v1.2.1

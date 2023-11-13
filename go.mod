@@ -3,7 +3,7 @@ module github.com/storybuilder/storybuilder
 go 1.15
 
 require (
-	github.com/coocood/freecache v1.2.1
+	github.com/coocood/freecache v1.2.4
 	github.com/go-chi/chi/v5 v5.0.7
 	github.com/go-chi/cors v1.2.1
 	github.com/go-playground/locales v0.14.0

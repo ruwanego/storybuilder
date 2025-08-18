@@ -28,6 +28,7 @@ func (cfg AppConfig) RenderAsTable() string {
 		{"Host", cfg.Host},
 		{"Port", cfg.Port},
 		{"Timezone", cfg.Timezone},
+		{"Shutdown Timeout", cfg.ShutdownTimeout},
 		{"Metrics Enabled", cfg.Metrics.Enabled},
 	}
 	if cfg.Metrics.Enabled {

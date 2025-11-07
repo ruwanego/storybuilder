@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/coocood/freecache v1.2.1
 	github.com/go-chi/chi/v5 v5.0.7
-	github.com/go-chi/cors v1.2.1
+	github.com/go-chi/cors v1.2.2
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-playground/validator/v10 v10.11.0

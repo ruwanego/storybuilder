@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/storybuilder/storybuilder/app/config"
 	"github.com/storybuilder/storybuilder/app/container"
@@ -34,7 +33,7 @@ func main() {
 	// block until a registered signal is received
 	<-c
 	// create a deadline to wait for
-	var wait time.Duration
+	wait := cfg.AppConfig.ShutdownTimeout.Dur()
 	// Doesn't block if no connections, but will otherwise wait
 	// until the timeout deadline.
 	ctx, cancel := context.WithTimeout(context.Background(), wait)

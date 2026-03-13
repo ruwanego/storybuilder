@@ -15,14 +15,15 @@ type Config struct {
 
 // AppConfig holds application configurations.
 type AppConfig struct {
-	Name     string        `yaml:"name"`
-	Mode     string        `yaml:"mode"`
-	Host     string        `yaml:"host"`
-	Port     int           `yaml:"port"`
-	Timeout  TimeoutConfig `yaml:"timeout"`
-	Timezone string        `yaml:"timezone"`
-	Metrics  MetricConfig  `yaml:"metrics"`
-	Cache    CacheConfig   `yaml:"cache"`
+	Name            string        `yaml:"name"`
+	Mode            string        `yaml:"mode"`
+	Host            string        `yaml:"host"`
+	Port            int           `yaml:"port"`
+	Timeout         TimeoutConfig `yaml:"timeout"`
+	ShutdownTimeout DurString     `yaml:"shutdown-timeout"`
+	Timezone        string        `yaml:"timezone"`
+	Metrics         MetricConfig  `yaml:"metrics"`
+	Cache           CacheConfig   `yaml:"cache"`
 }
 
 type DurString string

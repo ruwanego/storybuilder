@@ -2,11 +2,12 @@ name: storybuilder
 mode: DEBUG
 host:
 port: 3000
-timezone: GMT+0530
 timeout:
   write: 15s
   read: 15s
   idle: 60s
+shutdown-timeout: 15s
+timezone: GMT+0530
 metrics:
   enabled: false
   port: 3001

@@ -8,6 +8,6 @@ var resolvedRepositories Repositories
 
 // resolveRepositories resolve all repositories.
 func resolveRepositories() Repositories {
-	resolvedRepositories.SampleRepository = repositories.NewSampleMySQLRepository(resolvedAdapters.DBAdapter)
+	resolvedRepositories.SampleRepository = repositories.NewSampleSQLRepository(resolvedAdapters.DBAdapter, "sample")
 	return resolvedRepositories
 }

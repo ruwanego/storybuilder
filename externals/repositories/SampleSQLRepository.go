@@ -9,7 +9,7 @@ import (
 	"github.com/storybuilder/storybuilder/domain/entities"
 )
 
-// SampleSQLRepository is a generic generic SQL repository that implements database functionality
+// SampleSQLRepository is a generic SQL repository that implements database functionality
 // agnostic of the underlying dialect (MySQL, Postgres, etc.) as the adapter handles parameter translation natively.
 type SampleSQLRepository struct {
 	db        adapters.DBAdapterInterface

@@ -6,6 +6,8 @@ import (
 )
 
 // SampleTransformer is used to transform sample.
+//
+// swagger:model SampleTransformer
 type SampleTransformer struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`

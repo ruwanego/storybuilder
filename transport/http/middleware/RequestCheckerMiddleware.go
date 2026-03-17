@@ -21,6 +21,8 @@ func NewRequestCheckerMiddleware(ctr *container.Container) *RequestCheckerMiddle
 		container: ctr,
 		omittedRoutes: []string{
 			"/favicon.ico",
+			"/openapi",
+			"/openapi/swagger.yaml",
 		},
 	}
 }

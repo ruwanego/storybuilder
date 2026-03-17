@@ -19,7 +19,14 @@ func NewAPIController(ctr *container.Container) *APIController {
 	}
 }
 
-// GetInfo return basic details of the API.
+// GetInfo returns basic details of the API.
+//
+// @Summary      Get API information
+// @Description  Returns metadata about the running API (name, version, purpose)
+// @Tags         information
+// @Produce      json
+// @Success      200  {object}  transformers.APITransformer
+// @Router       / [get]
 func (ctl *APIController) GetInfo(w http.ResponseWriter, r *http.Request) error {
 	// transform
 	tr := transformers.APITransformer{

@@ -2,6 +2,8 @@ package unpackers
 
 // SampleUnpacker contains the unpacking structure for sample in request payload.
 //
+// swagger:model SampleUnpacker
+//
 // https://pkg.go.dev/gopkg.in/go-playground/validator.v10#section-documentation
 type SampleUnpacker struct {
 	Name     string `json:"name" validate:"required"`

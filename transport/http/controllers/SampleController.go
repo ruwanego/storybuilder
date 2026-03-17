@@ -9,11 +9,11 @@ import (
 	"github.com/storybuilder/storybuilder/app/container"
 	"github.com/storybuilder/storybuilder/domain/entities"
 	"github.com/storybuilder/storybuilder/domain/usecases/sample"
+	"github.com/storybuilder/storybuilder/transport/http/errors"
 	"github.com/storybuilder/storybuilder/transport/http/request"
 	"github.com/storybuilder/storybuilder/transport/http/request/unpackers"
 	"github.com/storybuilder/storybuilder/transport/http/response"
 	"github.com/storybuilder/storybuilder/transport/http/response/transformers"
-	"github.com/storybuilder/storybuilder/transport/http/errors"
 )
 
 // SampleController contains controller logic for endpoints.
@@ -31,6 +31,13 @@ func NewSampleController(ctr *container.Container) *SampleController {
 }
 
 // Get handles retrieving a list of samples.
+//
+// @Summary      Get samples list
+// @Description  Returns a collection of samples
+// @Tags         samples
+// @Produce      json
+// @Success      200  {array}   transformers.SampleTransformer
+// @Router       /samples [get]
 func (ctl *SampleController) Get(w http.ResponseWriter, r *http.Request) error {
 	// get the context
 	ctx := r.Context()
@@ -52,6 +59,15 @@ func (ctl *SampleController) Get(w http.ResponseWriter, r *http.Request) error {
 }
 
 // GetByID handles retrieving a single sample.
+//
+// @Summary      Get sample by ID
+// @Description  Returns a single sample resource
+// @Tags         samples
+// @Produce      json
+// @Param        id    path      int  true  "Sample ID"
+// @Success      200   {object}  transformers.SampleTransformer
+// @Failure      400   {object}  transformers.ValidationErrorTransformer
+// @Router       /samples/{id} [get]
 func (ctl *SampleController) GetByID(w http.ResponseWriter, r *http.Request) error {
 	// get the context
 	ctx := r.Context()
@@ -81,6 +97,16 @@ func (ctl *SampleController) GetByID(w http.ResponseWriter, r *http.Request) err
 }
 
 // Add adds a new sample entry.
+//
+// @Summary      Create a new sample
+// @Description  Creates a sample resource
+// @Tags         samples
+// @Accept       json
+// @Produce      json
+// @Param        payload  body      unpackers.SampleUnpacker  true  "Sample payload"
+// @Success      201      {object}  transformers.SampleTransformer
+// @Failure      400      {object}  transformers.ValidationErrorTransformer
+// @Router       /samples [post]
 func (ctl *SampleController) Add(w http.ResponseWriter, r *http.Request) error {
 	// get the context
 	ctx := r.Context()
@@ -115,6 +141,17 @@ func (ctl *SampleController) Add(w http.ResponseWriter, r *http.Request) error {
 }
 
 // Edit updates an existing sample entry.
+//
+// @Summary      Update a sample
+// @Description  Updates a sample resource
+// @Tags         samples
+// @Accept       json
+// @Produce      json
+// @Param        id       path      int                             true  "Sample ID"
+// @Param        payload  body      unpackers.SampleUnpacker  true  "Sample payload"
+// @Success      204
+// @Failure      400      {object}  transformers.ValidationErrorTransformer
+// @Router       /samples/{id} [put]
 func (ctl *SampleController) Edit(w http.ResponseWriter, r *http.Request) error {
 	// get the context
 	ctx := r.Context()
@@ -156,6 +193,15 @@ func (ctl *SampleController) Edit(w http.ResponseWriter, r *http.Request) error 
 }
 
 // Delete deletes an existing sample entry.
+//
+// @Summary      Delete a sample
+// @Description  Deletes a sample resource
+// @Tags         samples
+// @Produce      json
+// @Param        id   path      int  true  "Sample ID"
+// @Success      204
+// @Failure      400  {object}  transformers.ValidationErrorTransformer
+// @Router       /samples/{id} [delete]
 func (ctl *SampleController) Delete(w http.ResponseWriter, r *http.Request) error {
 	// get the context
 	ctx := r.Context()

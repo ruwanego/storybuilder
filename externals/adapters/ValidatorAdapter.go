@@ -22,6 +22,11 @@ func NewValidatorAdapter() (adapters.ValidatorAdapterInterface, error) {
 	a.validate = validator.New()
 	en := localsEn.New()
 	a.uni = ut.New(en, en)
+	// register translations once at startup
+	trans, _ := a.uni.GetTranslator("en")
+	if err := enTranslations.RegisterDefaultTranslations(a.validate, trans); err != nil {
+		return nil, err
+	}
 	return a, nil
 }
 
@@ -52,12 +57,6 @@ func (a *ValidatorAdapter) ValidateField(field any, rules string) map[string]str
 
 // getTranslator returns a translator for the given locale.
 func (a *ValidatorAdapter) getTranslator(locale string) ut.Translator {
-	// this is usually know or extracted from http 'Accept-Language' header
-	// also see uni.FindTranslator(...)
 	trans, _ := a.uni.GetTranslator(locale)
-	err := enTranslations.RegisterDefaultTranslations(a.validate, trans)
-	if err != nil {
-		return nil
-	}
 	return trans
 }

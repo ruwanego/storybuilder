@@ -10,6 +10,12 @@ import (
 	"github.com/storybuilder/storybuilder/transport/http/request/unpackers"
 )
 
+// Pre-compiled regexes for message formatting — compiled once at startup.
+var (
+	reNewLine     = regexp.MustCompile(`[\r\n]+`)
+	reSpecialChar = regexp.MustCompile(`[\t"']*`)
+)
+
 // Unpack the request in to the given unpacker struct.
 func Unpack(r *http.Request, unpacker unpackers.Unpacker) error {
 	err := json.NewDecoder(r.Body).Decode(unpacker)
@@ -21,10 +27,6 @@ func Unpack(r *http.Request, unpacker unpackers.Unpacker) error {
 
 // formatUnpackerMessage removes any special characters from the message string.
 func formatUnpackerMessage(p string) string {
-	// catch carriage returns and new lines
-	reNewLine := regexp.MustCompile(`[\r\n]+`)
-	// catch other special characters
-	reSpecialChar := regexp.MustCompile(`[\t"']*`)
 	m := reSpecialChar.ReplaceAllString(reNewLine.ReplaceAllString(p, " "), "")
 	return fmt.Sprintf("Required format: %s", m)
 }

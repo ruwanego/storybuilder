@@ -3,6 +3,7 @@ package adapters
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	"github.com/storybuilder/storybuilder/domain/globals"
@@ -31,9 +32,8 @@ func (a *PostgresTxAdapter) Wrap(ctx context.Context, fn func(ctx context.Contex
 	tx := ctx.Value(globals.TxKey).(*sql.Tx)
 	res, err := fn(ctx)
 	if err != nil {
-		errRb := tx.Rollback()
-		if errRb != nil {
-			return nil, errRb
+		if errRb := tx.Rollback(); errRb != nil {
+			return nil, fmt.Errorf("rollback failed after business error: %w (rollback: %v)", err, errRb)
 		}
 		return nil, err
 	}

@@ -65,8 +65,9 @@ func (a *PostgresAdapter) Query(ctx context.Context, query string, parameters ma
 	if err != nil {
 		return nil, err
 	}
+	defer statement.Close()
 	// check whether the query is a select statement
-	if strings.EqualFold(convertedQuery[:1], "s") {
+	if strings.HasPrefix(strings.ToUpper(strings.TrimSpace(convertedQuery)), "SELECT") {
 		rows, err := statement.Query(reorderedParameters...)
 		if err != nil {
 			return nil, err
@@ -143,7 +144,10 @@ func (a *PostgresAdapter) prepareStatement(ctx context.Context, query string) (*
 func (a *PostgresAdapter) prepareDataSet(rows *sql.Rows) ([]map[string]any, error) {
 	defer rows.Close()
 	var data []map[string]any
-	cols, _ := rows.Columns()
+	cols, err := rows.Columns()
+	if err != nil {
+		return nil, err
+	}
 	// create a slice of any's to represent each column
 	// and a second slice to contain pointers to each item in the columns slice
 	columns := make([]any, len(cols))

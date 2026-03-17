@@ -3,12 +3,13 @@ package adapters
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	"github.com/storybuilder/storybuilder/domain/globals"
 )
 
-// MySQLTxAdapter is used to handle postgres db transactions.
+// MySQLTxAdapter is used to handle MySQL db transactions.
 type MySQLTxAdapter struct {
 	dba adapters.DBAdapterInterface
 }
@@ -31,9 +32,8 @@ func (a *MySQLTxAdapter) Wrap(ctx context.Context, fn func(ctx context.Context) 
 	tx := ctx.Value(globals.TxKey).(*sql.Tx)
 	res, err := fn(ctx)
 	if err != nil {
-		errRb := tx.Rollback()
-		if errRb != nil {
-			return nil, errRb
+		if errRb := tx.Rollback(); errRb != nil {
+			return nil, fmt.Errorf("rollback failed after business error: %w (rollback: %v)", err, errRb)
 		}
 		return nil, err
 	}

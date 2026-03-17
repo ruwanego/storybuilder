@@ -11,7 +11,7 @@ require (
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/uuid v1.6.0
-	github.com/iancoleman/strcase v0.2.0
+	github.com/iancoleman/strcase v0.3.0
 	github.com/jedib0t/go-pretty/v6 v6.7.8
 	github.com/lib/pq v1.10.6
 	github.com/logrusorgru/aurora v2.0.3+incompatible

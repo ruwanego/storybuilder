@@ -20,6 +20,7 @@ type PostgresAdapter struct {
 	cfg      config.DBConfig
 	pool     *sql.DB
 	pqPrefix string
+	exp      *regexp.Regexp
 }
 
 // NewPostgresAdapter creates a new Postgres adapter instance.
@@ -34,10 +35,12 @@ func NewPostgresAdapter(cfg config.DBConfig) (adapters.DBAdapterInterface, error
 	db.SetMaxOpenConns(cfg.PoolSize)
 	// db.SetMaxIdleConns(2)
 	// db.SetConnMaxLifetime(time.Hour)
+	pqPrefix := "?"
 	a := &PostgresAdapter{
 		cfg:      cfg,
 		pool:     db,
-		pqPrefix: "?",
+		pqPrefix: pqPrefix,
+		exp:      regexp.MustCompile(`\` + pqPrefix + `\w+`),
 	}
 	// check whether the db is accessible
 	if cfg.Check {
@@ -94,13 +97,12 @@ func (a *PostgresAdapter) Destruct() {
 // in the query.
 func (a *PostgresAdapter) convertQuery(query string) (qry string, namedParams []string) {
 	query = strings.TrimSpace(query)
-	exp := regexp.MustCompile(`\` + a.pqPrefix + `\w+`)
-	namedParams = exp.FindAllString(query, -1)
+	namedParams = a.exp.FindAllString(query, -1)
 	for i := 0; i < len(namedParams); i++ {
 		namedParams[i] = strings.TrimPrefix(namedParams[i], a.pqPrefix)
 	}
 	paramPosition := 0
-	query = string(exp.ReplaceAllFunc([]byte(query), func(param []byte) []byte {
+	query = string(a.exp.ReplaceAllFunc([]byte(query), func(param []byte) []byte {
 		paramPosition++
 		paramName := fmt.Sprintf("$%d", paramPosition)
 

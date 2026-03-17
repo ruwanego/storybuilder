@@ -22,7 +22,7 @@ func NewSampleMySQLRepository(dbAdapter adapters.DBAdapterInterface) repositorie
 func (repo *SampleMySQLRepository) Get(ctx context.Context) ([]entities.Sample, error) {
 	query := `SELECT id, name, password
 				FROM sample`
-	parameters := map[string]interface{}{}
+	parameters := map[string]any{}
 	result, err := repo.db.Query(ctx, query, parameters)
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (repo *SampleMySQLRepository) GetByID(ctx context.Context, id int) (entitie
 	query := `SELECT id, name, password
 				FROM sample
 				WHERE id=?id`
-	parameters := map[string]interface{}{
+	parameters := map[string]any{
 		"id": id,
 	}
 	result, err := repo.db.Query(ctx, query, parameters)
@@ -61,7 +61,7 @@ func (repo *SampleMySQLRepository) Add(ctx context.Context, sample entities.Samp
 				(name, password)
 				VALUES(?name, ?password)
 				`
-	parameters := map[string]interface{}{
+	parameters := map[string]any{
 		"name":     sample.Name,
 		"password": sample.Password,
 	}
@@ -78,7 +78,7 @@ func (repo *SampleMySQLRepository) Edit(ctx context.Context, sample entities.Sam
 				SET name=?name, password=?password
 				WHERE id=?id
 				`
-	parameters := map[string]interface{}{
+	parameters := map[string]any{
 		"id":       sample.ID,
 		"name":     sample.Name,
 		"password": sample.Password,
@@ -95,7 +95,7 @@ func (repo *SampleMySQLRepository) Delete(ctx context.Context, id int) error {
 	query := `DELETE FROM sample
 				WHERE id=?id
 				`
-	parameters := map[string]interface{}{
+	parameters := map[string]any{
 		"id": id,
 	}
 	_, err := repo.db.Query(ctx, query, parameters)
@@ -106,7 +106,7 @@ func (repo *SampleMySQLRepository) Delete(ctx context.Context, id int) error {
 }
 
 // mapResult maps the result to entities.
-func (repo *SampleMySQLRepository) mapResult(result []map[string]interface{}) (samples []entities.Sample, err error) {
+func (repo *SampleMySQLRepository) mapResult(result []map[string]any) (samples []entities.Sample, err error) {
 	// Applying type assertion in this manner will result in a panic when the db data structure changes.
 	// This defer-recover pattern is used to recover from the panic and to return an error instead.
 	// Notice the use of `named returned values` for this function (without which the recover pattern will not work).

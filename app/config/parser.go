@@ -50,7 +50,7 @@ func parseServicesConfig(dir string) []ServiceConfig {
 
 // parseConfig reads configuration values from the given file and
 // populates the given config struct.
-func parseConfig(file string, unpacker interface{}) {
+func parseConfig(file string, unpacker any) {
 	content := read(file)
 	err := yaml.Unmarshal(content, unpacker)
 	if err != nil {

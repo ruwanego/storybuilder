@@ -22,5 +22,10 @@ func NewServiceError(message string, code int, details string) error {
 
 // Error returns the ServiceError message.
 func (e *ServiceError) Error() string {
-	return fmt.Sprintf("%s|%d|%s|%s", e.errType, e.code, e.msg, e.details)
+	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
+
+func (e *ServiceError) Type() string { return e.errType }
+func (e *ServiceError) Code() int { return e.code }
+func (e *ServiceError) Msg() string { return e.msg }
+func (e *ServiceError) Trace() string { return e.details }

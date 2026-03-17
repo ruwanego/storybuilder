@@ -21,7 +21,7 @@ func NewMySQLTxAdapter(dba adapters.DBAdapterInterface) adapters.DBTxAdapterInte
 }
 
 // Wrap runs the content of the function in a single transaction.
-func (a *MySQLTxAdapter) Wrap(ctx context.Context, fn func(ctx context.Context) (interface{}, error)) (interface{}, error) {
+func (a *MySQLTxAdapter) Wrap(ctx context.Context, fn func(ctx context.Context) (any, error)) (any, error) {
 	// attach a transaction to context
 	ctx, err := a.attachTx(ctx)
 	if err != nil {

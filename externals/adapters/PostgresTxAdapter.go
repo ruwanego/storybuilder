@@ -21,7 +21,7 @@ func NewPostgresTxAdapter(dba adapters.DBAdapterInterface) adapters.DBTxAdapterI
 }
 
 // Wrap runs the content of the function in a single transaction.
-func (a *PostgresTxAdapter) Wrap(ctx context.Context, fn func(ctx context.Context) (interface{}, error)) (interface{}, error) {
+func (a *PostgresTxAdapter) Wrap(ctx context.Context, fn func(ctx context.Context) (any, error)) (any, error) {
 	// attach a transaction to context
 	ctx, err := a.attachTx(ctx)
 	if err != nil {

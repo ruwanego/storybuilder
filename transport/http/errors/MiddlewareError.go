@@ -22,5 +22,10 @@ func NewMiddlewareError(message string, code int, details string) error {
 
 // Error returns the MiddlewareError message.
 func (e *MiddlewareError) Error() string {
-	return fmt.Sprintf("%s|%d|%s|%s", e.errType, e.code, e.msg, e.details)
+	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
+
+func (e *MiddlewareError) Type() string { return e.errType }
+func (e *MiddlewareError) Code() int { return e.code }
+func (e *MiddlewareError) Msg() string { return e.msg }
+func (e *MiddlewareError) Trace() string { return e.details }

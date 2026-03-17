@@ -27,7 +27,7 @@ func NewValidatorAdapter() (adapters.ValidatorAdapterInterface, error) {
 
 // Validate validates bound values of an unpacker struct against
 // validation rules defined in that unpacker struct.
-func (a *ValidatorAdapter) Validate(data interface{}) map[string]string {
+func (a *ValidatorAdapter) Validate(data any) map[string]string {
 	// returns nil or ValidationErrors ( []FieldError )
 	err := a.validate.Struct(data)
 	if err == nil {
@@ -39,7 +39,7 @@ func (a *ValidatorAdapter) Validate(data interface{}) map[string]string {
 }
 
 // ValidateField validates a single variable.
-func (a *ValidatorAdapter) ValidateField(field interface{}, rules string) map[string]string {
+func (a *ValidatorAdapter) ValidateField(field any, rules string) map[string]string {
 	// returns nil or ValidationErrors ( []FieldError )
 	err := a.validate.Var(field, rules)
 	if err == nil {

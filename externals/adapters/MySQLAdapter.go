@@ -52,7 +52,7 @@ func (a *MySQLAdapter) Ping() error {
 }
 
 // Query runs a query and returns the result.
-func (a *MySQLAdapter) Query(ctx context.Context, query string, parameters map[string]interface{}) ([]map[string]interface{}, error) {
+func (a *MySQLAdapter) Query(ctx context.Context, query string, parameters map[string]any) ([]map[string]any, error) {
 	convertedQuery, placeholders := a.convertQuery(query)
 	reorderedParameters, err := a.reorderParameters(parameters, placeholders)
 	if err != nil {
@@ -103,8 +103,8 @@ func (a *MySQLAdapter) convertQuery(query string) (string, []string) {
 }
 
 // Reorder the parameters map in the order of named parameters slice.
-func (a *MySQLAdapter) reorderParameters(params map[string]interface{}, namedParams []string) ([]interface{}, error) {
-	var reorderedParams []interface{}
+func (a *MySQLAdapter) reorderParameters(params map[string]any, namedParams []string) ([]any, error) {
+	var reorderedParams []any
 	for _, param := range namedParams {
 		// return an error if a named parameter is missing from params
 		paramValue, isParamExist := params[param]
@@ -131,14 +131,14 @@ func (a *MySQLAdapter) prepareStatement(ctx context.Context, query string) (*sql
 // Prepare the return dataset for select statements.
 //
 // Source: https://kylewbanks.com/blog/query-result-to-map-in-golang
-func (a *MySQLAdapter) prepareDataSet(rows *sql.Rows) ([]map[string]interface{}, error) {
+func (a *MySQLAdapter) prepareDataSet(rows *sql.Rows) ([]map[string]any, error) {
 	defer rows.Close()
-	var data []map[string]interface{}
+	var data []map[string]any
 	cols, _ := rows.Columns()
-	// create a slice of interface{}'s to represent each column
+	// create a slice of any's to represent each column
 	// and a second slice to contain pointers to each item in the columns slice
-	columns := make([]interface{}, len(cols))
-	columnPointers := make([]interface{}, len(cols))
+	columns := make([]any, len(cols))
+	columnPointers := make([]any, len(cols))
 	for i := range columns {
 		columnPointers[i] = &columns[i]
 	}
@@ -150,9 +150,9 @@ func (a *MySQLAdapter) prepareDataSet(rows *sql.Rows) ([]map[string]interface{},
 		}
 		// create our map, and retrieve the value for each column from the pointers slice
 		// storing it in the map with the name of the column as the key
-		row := make(map[string]interface{})
+		row := make(map[string]any)
 		for i, colName := range cols {
-			val := columnPointers[i].(*interface{})
+			val := columnPointers[i].(*any)
 			row[colName] = *val
 		}
 		data = append(data, row)
@@ -161,9 +161,9 @@ func (a *MySQLAdapter) prepareDataSet(rows *sql.Rows) ([]map[string]interface{},
 }
 
 // Prepare the result set for all other queries.
-func (a *MySQLAdapter) prepareResultSet(result sql.Result) ([]map[string]interface{}, error) {
-	var data []map[string]interface{}
-	row := make(map[string]interface{})
+func (a *MySQLAdapter) prepareResultSet(result sql.Result) ([]map[string]any, error) {
+	var data []map[string]any
+	row := make(map[string]any)
 	row["affected_rows"], _ = result.RowsAffected()
 	row["last_insert_id"], _ = result.LastInsertId()
 	return append(data, row), nil

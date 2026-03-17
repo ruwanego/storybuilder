@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 
 	"github.com/storybuilder/storybuilder/app/container"
@@ -12,7 +13,7 @@ import (
 
 // Controller is the base struct that holds fields and functionality common to all controllers.
 type Controller struct {
-	logger    adapters.LogAdapterInterface
+	logger    *slog.Logger
 	validator adapters.ValidatorAdapterInterface
 }
 
@@ -31,7 +32,7 @@ func (ctl *Controller) withTrace(ctx context.Context, prefix string) context.Con
 
 // sendResponse is a convenience function wrapping the actual `response.Send` function
 // to provide a cleaner usage interface.
-func (ctl *Controller) sendResponse(_ context.Context, w http.ResponseWriter, code int, payload ...interface{}) {
+func (ctl *Controller) sendResponse(_ context.Context, w http.ResponseWriter, code int, payload ...any) {
 	if len(payload) == 0 {
 		response.Send(w, nil, code)
 		return
@@ -41,6 +42,6 @@ func (ctl *Controller) sendResponse(_ context.Context, w http.ResponseWriter, co
 
 // sendError is a convenience function wrapping the actual `response.Error` function
 // to provide a cleaner usage interface.
-func (ctl *Controller) sendError(ctx context.Context, w http.ResponseWriter, err interface{}) {
+func (ctl *Controller) sendError(ctx context.Context, w http.ResponseWriter, err any) {
 	response.Error(ctx, w, err, ctl.logger)
 }

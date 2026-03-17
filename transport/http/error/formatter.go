@@ -2,7 +2,7 @@ package error
 
 import (
 	"encoding/json"
-	"strconv"
+	"errors"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -17,7 +17,7 @@ import (
 
 // format formats the error by error type.
 func format(err error) []byte {
-	var payload interface{}
+	var payload any
 	switch err.(type) {
 	case *baseErrs.ServerError,
 		*httpErrs.MiddlewareError,
@@ -39,15 +39,28 @@ func format(err error) []byte {
 	return msg
 }
 
+type genericError interface {
+	Type() string
+	Code() int
+	Msg() string
+	Trace() string
+}
+
 // formatGenericError formats all generic errors.
 func formatGenericError(err error) transformers.ErrorTransformer {
-	errorDetails := strings.Split(err.Error(), "|")
-	errCode, _ := strconv.Atoi(errorDetails[1])
+	var ge genericError
+	if errors.As(err, &ge) {
+		return transformers.ErrorTransformer{
+			Type:  ge.Type(),
+			Code:  ge.Code(),
+			Msg:   ge.Msg(),
+			Trace: ge.Trace(),
+		}
+	}
 	return transformers.ErrorTransformer{
-		Type:  errorDetails[0],
-		Code:  errCode,
-		Msg:   errorDetails[2],
-		Trace: errorDetails[3],
+		Type:  "Unknown",
+		Msg:   err.Error(),
+		Trace: err.Error(),
 	}
 }
 

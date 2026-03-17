@@ -1,6 +1,8 @@
 package container
 
 import (
+	"log/slog"
+
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	"github.com/storybuilder/storybuilder/domain/boundary/repositories"
 	"github.com/storybuilder/storybuilder/domain/boundary/services"
@@ -19,7 +21,7 @@ type Container struct {
 type Adapters struct {
 	DBAdapter        adapters.DBAdapterInterface
 	DBTxAdapter      adapters.DBTxAdapterInterface
-	LogAdapter       adapters.LogAdapterInterface
+	LogAdapter       *slog.Logger
 	ValidatorAdapter adapters.ValidatorAdapterInterface
 	CacheAdapter     adapters.CacheAdapterInterface
 }

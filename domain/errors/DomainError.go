@@ -24,5 +24,10 @@ func NewDomainError(message string, code, httpCode int, details string) error {
 
 // Error returns the DomainError message.
 func (e *DomainError) Error() string {
-	return fmt.Sprintf("%s|%d|%s|%s", e.errType, e.code, e.msg, e.details)
+	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
+
+func (e *DomainError) Type() string { return e.errType }
+func (e *DomainError) Code() int { return e.code }
+func (e *DomainError) Msg() string { return e.msg }
+func (e *DomainError) Trace() string { return e.details }

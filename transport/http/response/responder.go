@@ -4,26 +4,26 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 
-	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	errHandler "github.com/storybuilder/storybuilder/transport/http/error"
 	"github.com/storybuilder/storybuilder/transport/http/response/mappers"
 )
 
 // Send sets all required fields and write the response.
-func Send(w http.ResponseWriter, payload interface{}, code int) {
+func Send(w http.ResponseWriter, payload any, code int) {
 	// set headers
 	w.Header().Set("Content-Type", "application/json")
 	// set response code
 	w.WriteHeader(code)
 	// set payload
 	var p []byte
-	switch payload.(type) {
+	switch py := payload.(type) {
 	case []byte:
-		p = payload.([]byte)
+		p = py
 	case mappers.Payload:
-		p = toJSON(payload)
+		p = toJSON(py)
 	}
 	_, err := w.Write(p)
 	if err != nil {
@@ -32,8 +32,8 @@ func Send(w http.ResponseWriter, payload interface{}, code int) {
 }
 
 // Error formats and sends the error response.
-func Error(ctx context.Context, w http.ResponseWriter, err interface{}, logger adapters.LogAdapterInterface) {
-	var msg interface{}
+func Error(ctx context.Context, w http.ResponseWriter, err any, logger *slog.Logger) {
+	var msg any
 	code := http.StatusInternalServerError
 	// check whether err is a general error or a validation error
 	errG, isG := err.(error)
@@ -48,7 +48,7 @@ func Error(ctx context.Context, w http.ResponseWriter, err interface{}, logger a
 }
 
 // toJSON converts the payload to JSON.
-func toJSON(payload interface{}) []byte {
+func toJSON(payload any) []byte {
 	msg, err := json.Marshal(payload)
 	if err != nil {
 		fmt.Printf("JSON Marshaling Error: %v", err)

@@ -22,5 +22,10 @@ func NewTransformerError(message string, code int, details string) error {
 
 // Error returns the TransformerError message.
 func (e *TransformerError) Error() string {
-	return fmt.Sprintf("%s|%d|%s|%s", e.errType, e.code, e.msg, e.details)
+	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
+
+func (e *TransformerError) Type() string { return e.errType }
+func (e *TransformerError) Code() int { return e.code }
+func (e *TransformerError) Msg() string { return e.msg }
+func (e *TransformerError) Trace() string { return e.details }

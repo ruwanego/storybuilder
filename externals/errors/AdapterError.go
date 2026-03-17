@@ -22,5 +22,10 @@ func NewAdapterError(message string, code int, details string) error {
 
 // Error returns the AdapterError message.
 func (e *AdapterError) Error() string {
-	return fmt.Sprintf("%s|%d|%s|%s", e.errType, e.code, e.msg, e.details)
+	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
+
+func (e *AdapterError) Type() string { return e.errType }
+func (e *AdapterError) Code() int { return e.code }
+func (e *AdapterError) Msg() string { return e.msg }
+func (e *AdapterError) Trace() string { return e.details }

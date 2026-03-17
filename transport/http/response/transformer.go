@@ -6,7 +6,7 @@ import (
 )
 
 // Transform transforms data either as an object or as a collection depending on the `isCollection` boolean value.
-func Transform(data interface{}, t transformers.TransformerInterface, isCollection bool) (interface{}, error) {
+func Transform(data any, t transformers.TransformerInterface, isCollection bool) (any, error) {
 	if isCollection {
 		return t.TransformAsCollection(data)
 	}
@@ -14,7 +14,7 @@ func Transform(data interface{}, t transformers.TransformerInterface, isCollecti
 }
 
 // Map wraps payload in a standard response payload object.
-func Map(data []interface{}) (m mappers.Payload) {
+func Map(data []any) (m mappers.Payload) {
 	for _, v := range data {
 		switch v.(type) {
 		default:

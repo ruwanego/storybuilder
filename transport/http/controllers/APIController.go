@@ -20,7 +20,7 @@ func NewAPIController(ctr *container.Container) *APIController {
 }
 
 // GetInfo return basic details of the API.
-func (ctl *APIController) GetInfo(w http.ResponseWriter, r *http.Request) {
+func (ctl *APIController) GetInfo(w http.ResponseWriter, r *http.Request) error {
 	// transform
 	tr := transformers.APITransformer{
 		Name:    "StoryBuilder",
@@ -29,4 +29,5 @@ func (ctl *APIController) GetInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	// send response
 	ctl.sendResponse(r.Context(), w, http.StatusOK, tr)
+	return nil
 }

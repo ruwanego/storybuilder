@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	errHandler "github.com/storybuilder/storybuilder/transport/http/error"
+	httpErrs "github.com/storybuilder/storybuilder/transport/http/errors"
 	"github.com/storybuilder/storybuilder/transport/http/response/mappers"
 )
 
@@ -37,12 +38,11 @@ func Error(ctx context.Context, w http.ResponseWriter, err any, logger *slog.Log
 	code := http.StatusInternalServerError
 	// check whether err is a general error or a validation error
 	errG, isG := err.(error)
-	errV, isV := err.(map[string]string)
-	if isG {
-		msg, code = errHandler.Handle(ctx, errG, logger)
-	}
+	errV, isV := err.(httpErrs.ValidationMapError)
 	if isV {
-		msg, code = errHandler.HandleValidationErrors(ctx, errV, logger)
+		msg, code = errHandler.HandleValidationErrors(ctx, map[string]string(errV), logger)
+	} else if isG {
+		msg, code = errHandler.Handle(ctx, errG, logger)
 	}
 	Send(w, msg, code)
 }

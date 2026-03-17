@@ -45,3 +45,17 @@ func (ctl *Controller) sendResponse(_ context.Context, w http.ResponseWriter, co
 func (ctl *Controller) sendError(ctx context.Context, w http.ResponseWriter, err any) {
 	response.Error(ctx, w, err, ctl.logger)
 }
+
+// Action represents an HTTP handler that can return an error.
+type Action func(w http.ResponseWriter, r *http.Request) error
+
+// Wrap takes an Action and converts it to a standard http.HandlerFunc.
+// If the Action returns an error, Wrap will automatically send the error response.
+func (ctl *Controller) Wrap(action Action) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := action(w, r); err != nil {
+			// use the request context to ensure tracing works
+			ctl.sendError(r.Context(), w, err)
+		}
+	}
+}

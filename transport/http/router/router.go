@@ -19,12 +19,12 @@ func Init(ctr *container.Container) *chi.Mux {
 	sampleController := controllers.NewSampleController(ctr)
 	// bind controller functions to routes
 	// api info
-	r.Get("/", apiController.GetInfo)
+	r.Get("/", apiController.Wrap(apiController.GetInfo))
 	// sample
-	r.Get("/samples", sampleController.Get)
-	r.Get("/samples/{id:[0-9]+}", sampleController.GetByID)
-	r.Post("/samples", sampleController.Add)
-	r.Put("/samples/{id:[0-9]+}", sampleController.Edit)
-	r.Delete("/samples/{id:[0-9]+}", sampleController.Delete)
+	r.Get("/samples", sampleController.Wrap(sampleController.Get))
+	r.Get("/samples/{id:[0-9]+}", sampleController.Wrap(sampleController.GetByID))
+	r.Post("/samples", sampleController.Wrap(sampleController.Add))
+	r.Put("/samples/{id:[0-9]+}", sampleController.Wrap(sampleController.Edit))
+	r.Delete("/samples/{id:[0-9]+}", sampleController.Wrap(sampleController.Delete))
 	return r
 }

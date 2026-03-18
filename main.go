@@ -1,18 +1,3 @@
-// @title StoryBuilder API
-// @version 0.0.1
-// @description StoryBuilder REST API
-// @termsOfService http://example.com/terms/
-// @contact.name API Support
-// @contact.url http://www.example.com/support
-// @contact.email support@example.com
-// @license.name MIT
-// @license.url https://opensource.org/licenses/MIT
-// @host localhost:3000
-// @BasePath /
-// @schemes http
-
-//go:generate go run github.com/swaggo/swag/cmd/swag@latest init -g main.go -o docs
-
 package main
 
 import (

@@ -5,11 +5,8 @@ import (
 	"context"
 	"errors"
 	"log/slog"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
@@ -89,14 +86,6 @@ func newTestSampleController(mockRepo repositories.SampleRepositoryInterface, mo
 	return NewSampleController(ctr)
 }
 
-// requestWithChiID creates an http.Request with a chi URL param "id" injected.
-func requestWithChiID(method, path, id string) *http.Request {
-	req, _ := http.NewRequest(method, path, nil)
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("id", id)
-	return req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
-}
-
 // ----- Get -----
 
 func TestSampleController_Get_Success(t *testing.T) {
@@ -107,13 +96,14 @@ func TestSampleController_Get_Success(t *testing.T) {
 	mockRepo.On("Get", mock.Anything).Return(samples, nil)
 
 	ctl := newTestSampleController(mockRepo, mockValidator)
-	handler := ctl.Wrap(ctl.Get)
 
-	req, _ := http.NewRequest("GET", "/samples", nil)
-	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, req)
+	resp, err := ctl.Get(context.Background(), &struct{}{})
 
-	assert.Equal(t, http.StatusOK, rr.Code)
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+	assert.Len(t, resp.Body.Data, 1)
+	assert.Equal(t, 1, resp.Body.Data[0].ID)
+
 	mockRepo.AssertExpectations(t)
 }
 
@@ -124,13 +114,11 @@ func TestSampleController_Get_Error(t *testing.T) {
 	mockRepo.On("Get", mock.Anything).Return(nil, errors.New("db error"))
 
 	ctl := newTestSampleController(mockRepo, mockValidator)
-	handler := ctl.Wrap(ctl.Get)
 
-	req, _ := http.NewRequest("GET", "/samples", nil)
-	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, req)
+	resp, err := ctl.Get(context.Background(), &struct{}{})
+	assert.Error(t, err)
+	assert.Nil(t, resp)
 
-	assert.Equal(t, http.StatusInternalServerError, rr.Code)
 	mockRepo.AssertExpectations(t)
 }
 
@@ -140,36 +128,22 @@ func TestSampleController_GetByID_Success(t *testing.T) {
 	mockRepo := new(MockSampleRepository)
 	mockValidator := new(MockValidatorAdapter)
 
-	mockValidator.On("ValidateField", 1, "required,gt=0").Return(nil)
 	mockRepo.On("GetByID", mock.Anything, 1).Return(entities.Sample{ID: 1, Name: "foo"}, nil)
 
 	ctl := newTestSampleController(mockRepo, mockValidator)
-	handler := ctl.Wrap(ctl.GetByID)
 
-	req := requestWithChiID("GET", "/samples/1", "1")
-	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, req)
+	input := &GetSampleByIDInput{ID: 1}
+	resp, err := ctl.GetByID(context.Background(), input)
 
-	assert.Equal(t, http.StatusOK, rr.Code)
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+	assert.Equal(t, 1, resp.Body.Data.ID)
+	assert.Equal(t, "foo", resp.Body.Data.Name)
+
 	mockRepo.AssertExpectations(t)
 }
 
-func TestSampleController_GetByID_ValidationFail(t *testing.T) {
-	mockRepo := new(MockSampleRepository)
-	mockValidator := new(MockValidatorAdapter)
-
-	mockValidator.On("ValidateField", 0, "required,gt=0").Return(map[string]string{"id": "must be greater than 0"})
-
-	ctl := newTestSampleController(mockRepo, mockValidator)
-	handler := ctl.Wrap(ctl.GetByID)
-
-	req := requestWithChiID("GET", "/samples/abc", "abc")
-	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, req)
-
-	// Validation failure => 422 Unprocessable Entity
-	assert.Equal(t, http.StatusUnprocessableEntity, rr.Code)
-}
+// Validation failure is now handled automatically by huma
 
 // ----- Delete -----
 
@@ -177,17 +151,16 @@ func TestSampleController_Delete_Success(t *testing.T) {
 	mockRepo := new(MockSampleRepository)
 	mockValidator := new(MockValidatorAdapter)
 
-	mockValidator.On("ValidateField", 5, "required,gt=0").Return(nil)
 	mockRepo.On("Delete", mock.Anything, 5).Return(nil)
 
 	ctl := newTestSampleController(mockRepo, mockValidator)
-	handler := ctl.Wrap(ctl.Delete)
 
-	req := requestWithChiID("DELETE", "/samples/5", "5")
-	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, req)
+	input := &DeleteSampleInput{ID: 5}
+	resp, err := ctl.Delete(context.Background(), input)
 
-	assert.Equal(t, http.StatusNoContent, rr.Code)
+	assert.NoError(t, err)
+	assert.Nil(t, resp)
+
 	mockRepo.AssertExpectations(t)
 }
 
@@ -195,16 +168,15 @@ func TestSampleController_Delete_Error(t *testing.T) {
 	mockRepo := new(MockSampleRepository)
 	mockValidator := new(MockValidatorAdapter)
 
-	mockValidator.On("ValidateField", 5, "required,gt=0").Return(nil)
 	mockRepo.On("Delete", mock.Anything, 5).Return(errors.New("delete failed"))
 
 	ctl := newTestSampleController(mockRepo, mockValidator)
-	handler := ctl.Wrap(ctl.Delete)
 
-	req := requestWithChiID("DELETE", "/samples/5", "5")
-	rr := httptest.NewRecorder()
-	handler.ServeHTTP(rr, req)
+	input := &DeleteSampleInput{ID: 5}
+	resp, err := ctl.Delete(context.Background(), input)
 
-	assert.Equal(t, http.StatusInternalServerError, rr.Code)
+	assert.Error(t, err)
+	assert.Nil(t, resp)
+
 	mockRepo.AssertExpectations(t)
 }

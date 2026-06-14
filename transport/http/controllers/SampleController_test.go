@@ -9,7 +9,6 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 
@@ -90,11 +89,10 @@ func newTestSampleController(mockRepo repositories.SampleRepositoryInterface, mo
 }
 
 // requestWithChiID creates an http.Request with a chi URL param "id" injected.
-func requestWithChiID(method, path, id string) *http.Request {
+func requestWithMuxID(method, path, id string) *http.Request {
 	req, _ := http.NewRequest(method, path, nil)
-	rctx := chi.NewRouteContext()
-	rctx.URLParams.Add("id", id)
-	return req.WithContext(context.WithValue(req.Context(), chi.RouteCtxKey, rctx))
+	req.SetPathValue("id", id)
+	return req
 }
 
 // ----- Get -----
@@ -146,7 +144,7 @@ func TestSampleController_GetByID_Success(t *testing.T) {
 	ctl := newTestSampleController(mockRepo, mockValidator)
 	handler := ctl.Wrap(ctl.GetByID)
 
-	req := requestWithChiID("GET", "/samples/1", "1")
+	req := requestWithMuxID("GET", "/samples/1", "1")
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 
@@ -163,7 +161,7 @@ func TestSampleController_GetByID_ValidationFail(t *testing.T) {
 	ctl := newTestSampleController(mockRepo, mockValidator)
 	handler := ctl.Wrap(ctl.GetByID)
 
-	req := requestWithChiID("GET", "/samples/abc", "abc")
+	req := requestWithMuxID("GET", "/samples/abc", "abc")
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 
@@ -183,7 +181,7 @@ func TestSampleController_Delete_Success(t *testing.T) {
 	ctl := newTestSampleController(mockRepo, mockValidator)
 	handler := ctl.Wrap(ctl.Delete)
 
-	req := requestWithChiID("DELETE", "/samples/5", "5")
+	req := requestWithMuxID("DELETE", "/samples/5", "5")
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 
@@ -201,7 +199,7 @@ func TestSampleController_Delete_Error(t *testing.T) {
 	ctl := newTestSampleController(mockRepo, mockValidator)
 	handler := ctl.Wrap(ctl.Delete)
 
-	req := requestWithChiID("DELETE", "/samples/5", "5")
+	req := requestWithMuxID("DELETE", "/samples/5", "5")
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 

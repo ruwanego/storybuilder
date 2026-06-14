@@ -1,6 +1,8 @@
 package transformers
 
 import (
+	"slices"
+
 	"github.com/storybuilder/storybuilder/domain/entities"
 	"github.com/storybuilder/storybuilder/transport/http/errors"
 )
@@ -33,16 +35,12 @@ func (t *SampleTransformer) TransformAsObject(data any) (any, error) {
 
 // TransformAsCollection map data to a collection of transformer objects.
 func (t *SampleTransformer) TransformAsCollection(data any) (any, error) {
-	// NOTE: Make sure that you declare the transformer slice in this manner.
-	//		 Otherwise, the marshaller will return `null` instead of `[]` when
-	//		 marshaling empty slices
-	// https://apoorvam.github.io/blog/2017/golang-json-marshal-slice-as-empty-array-not-null/
 	trSamples := make([]SampleTransformer, 0)
 	samples, ok := data.([]entities.Sample)
 	if !ok {
 		return nil, t.dataMismatchError()
 	}
-	for _, sample := range samples {
+	for sample := range slices.Values(samples) {
 		tr, err := t.TransformAsObject(sample)
 		if err != nil {
 			return nil, err

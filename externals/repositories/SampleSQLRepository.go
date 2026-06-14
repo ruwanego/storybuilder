@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	"github.com/storybuilder/storybuilder/domain/boundary/repositories"
@@ -33,7 +34,7 @@ func (repo *SampleSQLRepository) Get(ctx context.Context) ([]entities.Sample, er
 	parameters := map[string]any{}
 	result, err := repo.db.Query(ctx, query, parameters)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("repository error: %w", err)
 	}
 	return repo.mapResult(result)
 }
@@ -48,11 +49,11 @@ func (repo *SampleSQLRepository) GetByID(ctx context.Context, id int) (entities.
 	}
 	result, err := repo.db.Query(ctx, query, parameters)
 	if err != nil {
-		return entities.Sample{}, err
+		return entities.Sample{}, fmt.Errorf("repository error: %w", err)
 	}
 	mapped, err := repo.mapResult(result)
 	if err != nil {
-		return entities.Sample{}, err
+		return entities.Sample{}, fmt.Errorf("repository error: %w", err)
 	}
 	if len(mapped) == 0 {
 		return entities.Sample{}, nil
@@ -69,7 +70,7 @@ func (repo *SampleSQLRepository) Add(ctx context.Context, sample entities.Sample
 	}
 	_, err := repo.db.Query(ctx, query, parameters)
 	if err != nil {
-		return err
+		return fmt.Errorf("repository error: %w", err)
 	}
 	return nil
 }
@@ -84,7 +85,7 @@ func (repo *SampleSQLRepository) Edit(ctx context.Context, sample entities.Sampl
 	}
 	_, err := repo.db.Query(ctx, query, parameters)
 	if err != nil {
-		return err
+		return fmt.Errorf("repository error: %w", err)
 	}
 	return nil
 }
@@ -97,7 +98,7 @@ func (repo *SampleSQLRepository) Delete(ctx context.Context, id int) error {
 	}
 	_, err := repo.db.Query(ctx, query, parameters)
 	if err != nil {
-		return err
+		return fmt.Errorf("repository error: %w", err)
 	}
 	return nil
 }
@@ -112,11 +113,14 @@ func (repo *SampleSQLRepository) mapResult(result []map[string]any) (samples []e
 			err, _ = r.(error)
 		}
 	}()
-	for _, row := range result {
+	for row := range slices.Values(result) {
 		samples = append(samples, entities.Sample{
 			ID:   int(row["id"].(int64)),
 			Name: string(row["name"].([]byte)),
 		})
 	}
-	return samples, err
+	if err != nil {
+		return nil, fmt.Errorf("repository error: %w", err)
+	}
+	return samples, nil
 }

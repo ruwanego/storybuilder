@@ -80,7 +80,7 @@ func TestSampleSQLRepository_Get_Error(t *testing.T) {
 
 	samples, err := repo.Get(context.Background())
 	assert.Error(t, err)
-	assert.Equal(t, "db error", err.Error())
+	assert.Equal(t, "repository error: db error", err.Error())
 	assert.Nil(t, samples)
 	mockDB.AssertExpectations(t)
 }
@@ -121,7 +121,7 @@ func TestSampleSQLRepository_GetByID_Error(t *testing.T) {
 
 	sample, err := repo.GetByID(context.Background(), 3)
 	assert.Error(t, err)
-	assert.Equal(t, "db find err", err.Error())
+	assert.Equal(t, "repository error: db find err", err.Error())
 	assert.Equal(t, 0, sample.ID)
 	mockDB.AssertExpectations(t)
 }

@@ -40,6 +40,7 @@ func format(err error) []byte {
 }
 
 type genericError interface {
+	error
 	Type() string
 	Code() int
 	Msg() string
@@ -48,8 +49,7 @@ type genericError interface {
 
 // formatGenericError formats all generic errors.
 func formatGenericError(err error) transformers.ErrorTransformer {
-	var ge genericError
-	if errors.As(err, &ge) {
+	if ge, ok := errors.AsType[genericError](err); ok {
 		return transformers.ErrorTransformer{
 			Type:  ge.Type(),
 			Code:  ge.Code(),

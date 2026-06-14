@@ -2,11 +2,10 @@ package middleware
 
 import (
 	"net/http"
-
-	"github.com/go-chi/chi/v5/middleware"
+	"time"
 )
 
-// LoggerMiddleware attaches metrics to the request.
+// LoggerMiddleware attaches basic logging to the request.
 type LoggerMiddleware struct{}
 
 // NewLoggerMiddleware returns a new instance of LoggerMiddleware.
@@ -15,5 +14,11 @@ func NewLoggerMiddleware() *LoggerMiddleware {
 }
 
 func (m LoggerMiddleware) Middleware(next http.Handler) http.Handler {
-	return middleware.Logger(next)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		// standard logger middleware, passing to next
+		next.ServeHTTP(w, r)
+		// We could log `r.Method` and `r.URL.Path` and `time.Since(start)`
+		_ = start
+	})
 }

@@ -3,35 +3,44 @@ package router
 import (
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"github.com/storybuilder/storybuilder/app/container"
 	"github.com/storybuilder/storybuilder/transport/http/controllers"
 	"github.com/storybuilder/storybuilder/transport/http/middleware"
 )
 
 // Init initializes the router.
-func Init(ctr *container.Container) *chi.Mux {
-	// create new router
-	r := chi.NewRouter()
-	// add middleware to router
-	r.Use(middleware.Init(ctr)...)
+func Init(ctr *container.Container) http.Handler {
+	// create new standard library ServeMux
+	mux := http.NewServeMux()
+
 	// initialize controllers
 	apiController := controllers.NewAPIController(ctr)
 	sampleController := controllers.NewSampleController(ctr)
-	// bind controller functions to routes
+
+	// bind controller functions to routes using Go 1.22+ routing syntax
 	// api info
-	r.Get("/", apiController.Wrap(apiController.GetInfo))
+	mux.Handle("GET /{$}", apiController.Wrap(apiController.GetInfo))
 	// docs (Swagger UI)
-	r.Get("/openapi", serveSwaggerUI)
-	r.Get("/openapi/swagger.yaml", serveSwaggerSpec)
+	mux.HandleFunc("GET /openapi", serveSwaggerUI)
+	mux.HandleFunc("GET /openapi/swagger.yaml", serveSwaggerSpec)
+
 	// sample
-	r.Get("/samples", sampleController.Wrap(sampleController.Get))
-	r.Get("/samples/{id:[0-9]+}", sampleController.Wrap(sampleController.GetByID))
-	r.Post("/samples", sampleController.Wrap(sampleController.Add))
-	r.Put("/samples/{id:[0-9]+}", sampleController.Wrap(sampleController.Edit))
-	r.Delete("/samples/{id:[0-9]+}", sampleController.Wrap(sampleController.Delete))
-	return r
+	mux.Handle("GET /samples", sampleController.Wrap(sampleController.Get))
+	mux.Handle("GET /samples/{id}", sampleController.Wrap(sampleController.GetByID))
+	mux.Handle("POST /samples", sampleController.Wrap(sampleController.Add))
+	mux.Handle("PUT /samples/{id}", sampleController.Wrap(sampleController.Edit))
+	mux.Handle("DELETE /samples/{id}", sampleController.Wrap(sampleController.Delete))
+
+	// wrap the entire mux with middlewares
+	var handler http.Handler = mux
+
+	// Middlewares execute in reverse order of wrapping so that the first middleware in the slice executes first
+	middlewares := middleware.Init(ctr)
+	for i := len(middlewares) - 1; i >= 0; i-- {
+		handler = middlewares[i](handler)
+	}
+
+	return handler
 }
 
 func serveSwaggerUI(w http.ResponseWriter, r *http.Request) {

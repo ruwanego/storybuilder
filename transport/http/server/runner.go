@@ -22,7 +22,7 @@ func Run(cfg config.AppConfig, ctr *container.Container) *http.Server {
 		WriteTimeout: cfg.Timeout.Write.Dur(),
 		ReadTimeout:  cfg.Timeout.Read.Dur(),
 		IdleTimeout:  cfg.Timeout.Idle.Dur(),
-		// pass our instance of chi.Mux in
+		// pass our router handler in
 		Handler: r,
 	}
 	// run our server in a goroutine so that it doesn't block

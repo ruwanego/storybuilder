@@ -3,50 +3,48 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/storybuilder/storybuilder/app/container"
-	httpErrs "github.com/storybuilder/storybuilder/transport/http/errors"
+	"github.com/storybuilder/storybuilder/transport/http/errors"
 	"github.com/storybuilder/storybuilder/transport/http/response"
 )
 
-// RequestCheckerMiddleware validates the request header.
+// RequestCheckerMiddleware checks if request configuration is in order.
 type RequestCheckerMiddleware struct {
-	container     *container.Container
 	omittedRoutes []string
+	ctr           *container.Container
 }
 
 // NewRequestCheckerMiddleware returns a new instance of RequestCheckerMiddleware.
 func NewRequestCheckerMiddleware(ctr *container.Container) *RequestCheckerMiddleware {
 	return &RequestCheckerMiddleware{
-		container: ctr,
-		omittedRoutes: []string{
-			"/favicon.ico",
-			"/openapi",
-			"/openapi/swagger.yaml",
-		},
+		omittedRoutes: []string{"/openapi", "/metrics"},
+		ctr:           ctr,
 	}
 }
 
 // Middleware executes middleware rules of RequestCheckerMiddleware.
 func (m *RequestCheckerMiddleware) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		requestURI := r.RequestURI
-		contentType := r.Header.Get("Content-Type")
-		// skip omitted routes
+		reqURL := r.URL.String()
 		for _, v := range m.omittedRoutes {
-			if v == requestURI {
+			if strings.HasPrefix(reqURL, v) {
 				next.ServeHTTP(w, r)
 				return
 			}
 		}
-		// check content type
-		if contentType != "application/json" {
-			err := httpErrs.NewMiddlewareError(
-				fmt.Sprintf("API only accepts JSON as Content-Type, '%s' is given", contentType), 100, "")
-			response.Error(r.Context(), w, err, m.container.Adapters.LogAdapter)
-			return
+
+		if r.Method == http.MethodPost || r.Method == http.MethodPut {
+			contentType := r.Header.Get("Content-Type")
+			if contentType != "application/json" {
+				err := errors.NewMiddlewareError(
+					fmt.Sprintf("API only accepts JSON as Content-Type, '%s' is given", contentType), 100, "")
+				response.Error(r.Context(), w, err, m.ctr.Adapters.LogAdapter)
+				return
+			}
 		}
-		// Call the next handler, which can be another middleware in the chain, or the final handler.
+
 		next.ServeHTTP(w, r)
 	})
 }

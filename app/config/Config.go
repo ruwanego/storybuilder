@@ -24,6 +24,7 @@ type AppConfig struct {
 	Timezone        string        `yaml:"timezone"`
 	Metrics         MetricConfig  `yaml:"metrics"`
 	Cache           CacheConfig   `yaml:"cache"`
+	AllowedOrigins  []string      `yaml:"allowed-origins"`
 }
 
 type DurString string

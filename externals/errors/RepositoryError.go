@@ -25,7 +25,7 @@ func (e *RepositoryError) Error() string {
 	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
 
-func (e *RepositoryError) Type() string { return e.errType }
-func (e *RepositoryError) Code() int { return e.code }
-func (e *RepositoryError) Msg() string { return e.msg }
+func (e *RepositoryError) Type() string  { return e.errType }
+func (e *RepositoryError) Code() int     { return e.code }
+func (e *RepositoryError) Msg() string   { return e.msg }
 func (e *RepositoryError) Trace() string { return e.details }

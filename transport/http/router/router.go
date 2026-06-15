@@ -3,13 +3,14 @@ package router
 import (
 	"net/http"
 
+	"github.com/storybuilder/storybuilder/app/config"
 	"github.com/storybuilder/storybuilder/app/container"
 	"github.com/storybuilder/storybuilder/transport/http/controllers"
 	"github.com/storybuilder/storybuilder/transport/http/middleware"
 )
 
 // Init initializes the router.
-func Init(ctr *container.Container) http.Handler {
+func Init(ctr *container.Container, appCfg config.AppConfig) http.Handler {
 	// create new standard library ServeMux
 	mux := http.NewServeMux()
 
@@ -35,7 +36,7 @@ func Init(ctr *container.Container) http.Handler {
 	var handler http.Handler = mux
 
 	// Middlewares execute in reverse order of wrapping so that the first middleware in the slice executes first
-	middlewares := middleware.Init(ctr)
+	middlewares := middleware.Init(ctr, appCfg)
 	for i := len(middlewares) - 1; i >= 0; i-- {
 		handler = middlewares[i](handler)
 	}

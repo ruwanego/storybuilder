@@ -18,29 +18,29 @@ func TestController_Wrap_Success(t *testing.T) {
 	// Create mock container
 	var logBuf bytes.Buffer
 	logger := slog.New(slog.NewJSONHandler(&logBuf, nil))
-	
+
 	ctr := &container.Container{
 		Adapters: container.Adapters{
 			LogAdapter: logger,
 		},
 	}
-	
+
 	ctl := NewController(ctr)
-	
+
 	// Create an action that succeeds
 	action := func(w http.ResponseWriter, r *http.Request) error {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK"))
 		return nil
 	}
-	
+
 	handler := ctl.Wrap(action)
-	
+
 	req, _ := http.NewRequest("GET", "/", nil)
 	rr := httptest.NewRecorder()
-	
+
 	handler.ServeHTTP(rr, req)
-	
+
 	assert.Equal(t, http.StatusOK, rr.Code)
 	assert.Equal(t, "OK", rr.Body.String())
 }
@@ -48,27 +48,27 @@ func TestController_Wrap_Success(t *testing.T) {
 func TestController_Wrap_Error(t *testing.T) {
 	var logBuf bytes.Buffer
 	logger := slog.New(slog.NewJSONHandler(&logBuf, nil))
-	
+
 	ctr := &container.Container{
 		Adapters: container.Adapters{
 			LogAdapter: logger,
 		},
 	}
-	
+
 	ctl := NewController(ctr)
-	
+
 	// Create an action that fails
 	action := func(w http.ResponseWriter, r *http.Request) error {
 		return errors.New("something went wrong")
 	}
-	
+
 	handler := ctl.Wrap(action)
-	
+
 	req, _ := http.NewRequest("GET", "/", nil)
 	rr := httptest.NewRecorder()
-	
+
 	handler.ServeHTTP(rr, req)
-	
+
 	assert.Equal(t, http.StatusInternalServerError, rr.Code)
 	assert.Contains(t, rr.Body.String(), "something went wrong")
 }

@@ -3,6 +3,7 @@ package error
 import (
 	"encoding/json"
 	"errors"
+	"maps"
 	"strings"
 
 	"github.com/iancoleman/strcase"
@@ -101,7 +102,7 @@ func formatUnknownError(err error) transformers.ErrorTransformer {
 // formatValidationPayload does a final round of formatting to validation errors.
 func formatValidationPayload(p map[string]string) map[string]string {
 	ep := make(map[string]string)
-	for k, v := range p {
+	for k, v := range maps.All(p) {
 		ek := formatKey(k)
 		ep[ek] = v
 	}

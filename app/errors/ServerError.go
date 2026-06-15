@@ -25,7 +25,7 @@ func (e *ServerError) Error() string {
 	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
 
-func (e *ServerError) Type() string { return e.errType }
-func (e *ServerError) Code() int { return e.code }
-func (e *ServerError) Msg() string { return e.msg }
+func (e *ServerError) Type() string  { return e.errType }
+func (e *ServerError) Code() int     { return e.code }
+func (e *ServerError) Msg() string   { return e.msg }
 func (e *ServerError) Trace() string { return e.details }

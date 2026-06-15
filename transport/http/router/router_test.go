@@ -9,6 +9,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/storybuilder/storybuilder/app/config"
 	"github.com/storybuilder/storybuilder/app/container"
 )
 
@@ -25,13 +26,13 @@ func newTestContainer() *container.Container {
 
 func TestInit_ReturnsRouter(t *testing.T) {
 	ctr := newTestContainer()
-	handler := Init(ctr)
+	handler := Init(ctr, config.AppConfig{AllowedOrigins: []string{"*"}})
 	assert.NotNil(t, handler)
 }
 
 func TestRouter_GetInfo(t *testing.T) {
 	ctr := newTestContainer()
-	handler := Init(ctr)
+	handler := Init(ctr, config.AppConfig{AllowedOrigins: []string{"*"}})
 
 	req, _ := http.NewRequest("GET", "/", nil)
 	req.Header.Set("Content-Type", "application/json")
@@ -43,7 +44,7 @@ func TestRouter_GetInfo(t *testing.T) {
 
 func TestRouter_MethodNotAllowed(t *testing.T) {
 	ctr := newTestContainer()
-	handler := Init(ctr)
+	handler := Init(ctr, config.AppConfig{AllowedOrigins: []string{"*"}})
 
 	// POST to "/" which only has a GET handler — standard library mux returns 405
 	req, _ := http.NewRequest("POST", "/", nil)
@@ -56,7 +57,7 @@ func TestRouter_MethodNotAllowed(t *testing.T) {
 
 func TestRouter_NotFound(t *testing.T) {
 	ctr := newTestContainer()
-	handler := Init(ctr)
+	handler := Init(ctr, config.AppConfig{AllowedOrigins: []string{"*"}})
 
 	req, _ := http.NewRequest("GET", "/nonexistent-route", nil)
 	req.Header.Set("Content-Type", "application/json")

@@ -12,6 +12,8 @@ metrics:
   enabled: false
   port: 3001
   route: /metrics
+allowed-origins:
+  - "https://foo.com"
 cache:
   life-window: 24h
   hard-max-size: 5

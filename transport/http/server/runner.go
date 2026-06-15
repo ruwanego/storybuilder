@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"context"
 	"fmt"
 	"log"
@@ -15,7 +16,7 @@ import (
 // Run runs the http server.
 func Run(cfg config.AppConfig, ctr *container.Container) *http.Server {
 	// initialize the router
-	r := router.Init(ctr)
+	r := router.Init(ctr, cfg)
 	srv := &http.Server{
 		Addr: cfg.Host + ":" + strconv.Itoa(cfg.Port),
 		// good practice to set timeouts to avoid Slowloris attacks
@@ -28,7 +29,7 @@ func Run(cfg config.AppConfig, ctr *container.Container) *http.Server {
 	// run our server in a goroutine so that it doesn't block
 	go func() {
 		err := srv.ListenAndServe()
-		if err != nil {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Println(err)
 			panic("Service shutting down unexpectedly...")
 		}
@@ -42,7 +43,7 @@ func Run(cfg config.AppConfig, ctr *container.Container) *http.Server {
 func Stop(ctx context.Context, srv *http.Server) {
 	fmt.Println("Service shutting down...")
 	err := srv.Shutdown(ctx)
-	if err != nil {
+	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		fmt.Printf("Error Shutting the server down: %v", err)
 	}
 }

@@ -25,7 +25,7 @@ func (e *AdapterError) Error() string {
 	return fmt.Sprintf("%s: %s", e.errType, e.msg)
 }
 
-func (e *AdapterError) Type() string { return e.errType }
-func (e *AdapterError) Code() int { return e.code }
-func (e *AdapterError) Msg() string { return e.msg }
+func (e *AdapterError) Type() string  { return e.errType }
+func (e *AdapterError) Code() int     { return e.code }
+func (e *AdapterError) Msg() string   { return e.msg }
 func (e *AdapterError) Trace() string { return e.details }

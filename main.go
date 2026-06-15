@@ -40,13 +40,12 @@ func main() {
 	srv := httpServer.Run(cfg.AppConfig, ctr)
 	// start the server to expose application metrics
 	metricsServer.Run(cfg.AppConfig, ctr)
-	// enable graceful shutdown
-	c := make(chan os.Signal, 1)
-	// accept graceful shutdowns when quit via SIGINT (Ctrl+C)
-	// SIGKILL, SIGQUIT or SIGTERM (Ctrl+/) will not be caught
-	signal.Notify(c, os.Interrupt)
+	// enable graceful shutdown using signal context
+	sigCtx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
 	// block until a registered signal is received
-	<-c
+	<-sigCtx.Done()
+
 	// create a deadline to wait for
 	wait := cfg.AppConfig.ShutdownTimeout.Dur()
 	// Doesn't block if no connections, but will otherwise wait

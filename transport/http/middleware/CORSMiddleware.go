@@ -2,21 +2,45 @@ package middleware
 
 import (
 	"net/http"
+	"strings"
+
+	"github.com/storybuilder/storybuilder/app/config"
 )
 
 // CORSMiddleware handles CORS preflight and headers.
-type CORSMiddleware struct{}
+type CORSMiddleware struct {
+	allowedOrigins []string
+}
 
 // NewCORSMiddleware returns a new instance of CORSMiddleware.
-func NewCORSMiddleware() *CORSMiddleware {
-	return &CORSMiddleware{}
+func NewCORSMiddleware(cfg config.AppConfig) *CORSMiddleware {
+	return &CORSMiddleware{
+		allowedOrigins: cfg.AllowedOrigins,
+	}
 }
 
 func (m CORSMiddleware) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if origin != "" {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
+		allowedOrigin := ""
+
+		if len(m.allowedOrigins) == 1 && m.allowedOrigins[0] == "*" {
+			allowedOrigin = "*"
+		} else {
+			for _, o := range m.allowedOrigins {
+				if o == origin {
+					allowedOrigin = origin
+					break
+				}
+				if strings.HasSuffix(o, "*") && strings.HasPrefix(origin, o[:len(o)-1]) {
+					allowedOrigin = origin
+					break
+				}
+			}
+		}
+
+		if allowedOrigin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token")
 			w.Header().Set("Access-Control-Expose-Headers", "Link")

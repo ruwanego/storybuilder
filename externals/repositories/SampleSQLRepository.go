@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 	"fmt"
-	"slices"
 
 	"github.com/storybuilder/storybuilder/domain/boundary/adapters"
 	"github.com/storybuilder/storybuilder/domain/boundary/repositories"
@@ -113,7 +112,7 @@ func (repo *SampleSQLRepository) mapResult(result []map[string]any) (samples []e
 			err, _ = r.(error)
 		}
 	}()
-	for row := range slices.Values(result) {
+	for _, row := range result {
 		samples = append(samples, entities.Sample{
 			ID:   int(row["id"].(int64)),
 			Name: string(row["name"].([]byte)),

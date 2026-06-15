@@ -3,7 +3,6 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"slices"
 	"strings"
 
 	"github.com/storybuilder/storybuilder/app/container"
@@ -29,7 +28,7 @@ func NewRequestCheckerMiddleware(ctr *container.Container) *RequestCheckerMiddle
 func (m *RequestCheckerMiddleware) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		reqURL := r.URL.String()
-		for v := range slices.Values(m.omittedRoutes) {
+		for _, v := range m.omittedRoutes {
 			if strings.HasPrefix(reqURL, v) {
 				next.ServeHTTP(w, r)
 				return

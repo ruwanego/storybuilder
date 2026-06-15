@@ -1,8 +1,6 @@
 package response
 
 import (
-	"slices"
-
 	"github.com/storybuilder/storybuilder/transport/http/response/mappers"
 	"github.com/storybuilder/storybuilder/transport/http/response/transformers"
 )
@@ -17,7 +15,7 @@ func Transform(data any, t transformers.TransformerInterface, isCollection bool)
 
 // Map wraps payload in a standard response payload object.
 func Map(data []any) (m mappers.Payload) {
-	for v := range slices.Values(data) {
+	for _, v := range data {
 		switch v.(type) {
 		default:
 			m.Data = v

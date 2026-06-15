@@ -2,27 +2,57 @@ package middleware
 
 import (
 	"net/http"
+	"slices"
+	"strings"
 
-	"github.com/go-chi/cors"
+	"github.com/storybuilder/storybuilder/app/config"
 )
 
 // CORSMiddleware attaches metrics to the request.
-type CORSMiddleware struct{}
+type CORSMiddleware struct {
+	allowedOrigins []string
+}
 
 // NewCORSMiddleware returns a new instance of CORSMiddleware.
-func NewCORSMiddleware() *CORSMiddleware {
-	return &CORSMiddleware{}
+func NewCORSMiddleware(cfg config.AppConfig) *CORSMiddleware {
+	return &CORSMiddleware{
+		allowedOrigins: cfg.AllowedOrigins,
+	}
 }
 
 func (m CORSMiddleware) Middleware(next http.Handler) http.Handler {
-	return cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
-		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: false,
-		MaxAge:           300, // Maximum value not ignored by any of major browsers
-	})(next)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		allowedOrigin := ""
+
+		if len(m.allowedOrigins) == 1 && m.allowedOrigins[0] == "*" {
+			allowedOrigin = "*"
+		} else {
+			for o := range slices.Values(m.allowedOrigins) {
+				if o == origin {
+					allowedOrigin = origin
+					break
+				}
+				if strings.HasSuffix(o, "*") && strings.HasPrefix(origin, o[:len(o)-1]) {
+					allowedOrigin = origin
+					break
+				}
+			}
+		}
+
+		if allowedOrigin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token")
+			w.Header().Set("Access-Control-Expose-Headers", "Link")
+			w.Header().Set("Access-Control-Max-Age", "300")
+		}
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }

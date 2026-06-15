@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"strings"
+	"slices"
+	"maps"
 
 	"github.com/iancoleman/strcase"
 
@@ -101,7 +103,7 @@ func formatUnknownError(err error) transformers.ErrorTransformer {
 // formatValidationPayload does a final round of formatting to validation errors.
 func formatValidationPayload(p map[string]string) map[string]string {
 	ep := make(map[string]string)
-	for k, v := range p {
+	for k, v := range maps.All(p) {
 		ek := formatKey(k)
 		ep[ek] = v
 	}
@@ -113,7 +115,7 @@ func formatKey(k string) string {
 	kParts := strings.Split(k, ".")
 	// remove unpacker name
 	kParts = kParts[1:]
-	for i, part := range kParts {
+	for i, part := range slices.All(kParts) {
 		kParts[i] = strcase.ToSnake(part)
 	}
 	return strings.Join(kParts, ".")

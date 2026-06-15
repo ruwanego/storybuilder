@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi/v5"
 
 	"github.com/storybuilder/storybuilder/app/container"
 	"github.com/storybuilder/storybuilder/domain/entities"
@@ -74,7 +73,7 @@ func (ctl *SampleController) GetByID(w http.ResponseWriter, r *http.Request) err
 	// add a trace string to the context
 	ctx = ctl.withTrace(ctx, "SampleController.GetByID")
 	// get id from request
-	idVal := chi.URLParam(r, "id")
+	idVal := r.PathValue("id")
 	id, _ := strconv.Atoi(idVal)
 	// validate
 	errs := ctl.validator.ValidateField(id, "required,gt=0")
@@ -164,7 +163,7 @@ func (ctl *SampleController) Edit(w http.ResponseWriter, r *http.Request) error 
 		return err
 	}
 	// get id from request
-	idVal := chi.URLParam(r, "id")
+	idVal := r.PathValue("id")
 	id, _ := strconv.Atoi(idVal)
 	// validate request parameters
 	errs := ctl.validator.ValidateField(id, "required,gt=0")
@@ -208,7 +207,7 @@ func (ctl *SampleController) Delete(w http.ResponseWriter, r *http.Request) erro
 	// add a trace string to the context
 	ctx = ctl.withTrace(ctx, "SampleController.Delete")
 	// get id from request
-	idVal := chi.URLParam(r, "id")
+	idVal := r.PathValue("id")
 	id, _ := strconv.Atoi(idVal)
 	// validate request parameters
 	errs := ctl.validator.ValidateField(id, "required,gt=0")

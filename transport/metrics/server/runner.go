@@ -1,6 +1,7 @@
 package metrics
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,7 +27,7 @@ func Run(cfg config.AppConfig, _ *container.Container) {
 	// run metric server in a goroutine so that it doesn't block
 	go func() {
 		err := http.ListenAndServe(address, nil)
-		if err != nil {
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Println(err)
 			panic("Metric server error...")
 		}

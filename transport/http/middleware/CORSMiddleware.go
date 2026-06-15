@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"slices"
 	"strings"
 
 	"github.com/storybuilder/storybuilder/app/config"
@@ -28,7 +27,7 @@ func (m CORSMiddleware) Middleware(next http.Handler) http.Handler {
 		if len(m.allowedOrigins) == 1 && m.allowedOrigins[0] == "*" {
 			allowedOrigin = "*"
 		} else {
-			for o := range slices.Values(m.allowedOrigins) {
+			for _, o := range m.allowedOrigins {
 				if o == origin {
 					allowedOrigin = origin
 					break

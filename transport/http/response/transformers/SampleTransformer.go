@@ -1,8 +1,6 @@
 package transformers
 
 import (
-	"slices"
-
 	"github.com/storybuilder/storybuilder/domain/entities"
 	"github.com/storybuilder/storybuilder/transport/http/errors"
 )
@@ -40,7 +38,7 @@ func (t *SampleTransformer) TransformAsCollection(data any) (any, error) {
 	if !ok {
 		return nil, t.dataMismatchError()
 	}
-	for sample := range slices.Values(samples) {
+	for _, sample := range samples {
 		tr, err := t.TransformAsObject(sample)
 		if err != nil {
 			return nil, err

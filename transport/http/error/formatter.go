@@ -3,9 +3,8 @@ package error
 import (
 	"encoding/json"
 	"errors"
-	"strings"
-	"slices"
 	"maps"
+	"strings"
 
 	"github.com/iancoleman/strcase"
 
@@ -115,7 +114,7 @@ func formatKey(k string) string {
 	kParts := strings.Split(k, ".")
 	// remove unpacker name
 	kParts = kParts[1:]
-	for i, part := range slices.All(kParts) {
+	for i, part := range kParts {
 		kParts[i] = strcase.ToSnake(part)
 	}
 	return strings.Join(kParts, ".")
